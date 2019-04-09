@@ -36,7 +36,10 @@ module.exports = async function () {
     i += 7
 
     if (ip !== '0.0.0.0') {
-      servers[ip] = port
+      servers.push({
+        ip,
+        port
+      })
     }
   }
 
