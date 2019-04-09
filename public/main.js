@@ -40,12 +40,12 @@
 
     switch (json.type) {
       case 'leaderboard': {
-        let totalScore = 0;
-        
+        let totalScore = 0
+
         for (let s of json.leaderboard) {
           totalScore += s.length
         }
-        
+
         cached.leaderboard.innerText = `${json.server}
 
       Total score: ${totalScore}
