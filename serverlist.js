@@ -3,7 +3,7 @@ let got = require('got')
 module.exports = async function () {
   let res = await got('http://slither.io/i33628.txt')
 
-  let servers = Object.create(null)
+  let servers = []
 
   let dropped = res.body.split('').slice(1)
 
