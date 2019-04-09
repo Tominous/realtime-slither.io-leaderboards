@@ -21,7 +21,7 @@
     .get('/main.js', function (req, res) {
       res.status(200).sendFile(path.join(__dirname, 'public', 'main.js'))
     })
-    .ws('/', function (ws) { console.log('connect') })
+    .ws('/', function (ws) {})
     .listen(process.env.PORT || 3000, function () {
       for (let ip in servers) {
         spawn(ip, servers[ip])
