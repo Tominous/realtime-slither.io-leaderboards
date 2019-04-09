@@ -15,11 +15,11 @@
 
   expressWs.app.get('/', function (req, res) {
     res.status(200).sendFile(path.join(__dirname, 'public', 'index.html'))
-  }).get('/main.js', function (req, res) {
-    res.status(200).sendFile(path.join(__dirname, 'public', 'main.js'))
+  }).get('/main.css', function (req, res) {
+    res.status(200).sendFile(path.join(__dirname, 'public', 'main.css'))
   })
-    .get('/main.css', function (req, res) {
-      res.status(200).sendFile(path.join(__dirname, 'public', 'main.css'))
+    .get('/main.js', function (req, res) {
+      res.status(200).sendFile(path.join(__dirname, 'public', 'main.js'))
     })
     .ws('/', function (ws) { console.log('connect') })
     .listen(process.env.PORT || 3000, function () {
