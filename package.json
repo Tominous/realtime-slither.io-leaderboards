@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "fix": "standard --verbose --fix",
+    "test": "standard --verbose"
+  },
+  "dependencies": {
+    "got": "9.6.0",
+    "slitherode": "vvanelslande/slitherode"
+  }
+}
