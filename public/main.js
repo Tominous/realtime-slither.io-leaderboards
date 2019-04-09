@@ -14,7 +14,7 @@
       container.style.display = 'inline-block'
       container.style.border = '1px solid #4CAF50'
       container.style.width = '400px'
-      container.style.height = '350px'
+      container.style.height = '370px'
 
       let leaderboard = document.createElement('div')
       container.appendChild(leaderboard)
