@@ -5,7 +5,7 @@
 
   let servers = await require('./serverlist.js')()
 
-  let Client = require('slitherode')
+  let Client = require('slio')
 
   let WebSocket = require('ws')
 
