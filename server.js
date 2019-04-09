@@ -1,10 +1,4 @@
 (async function () {
-  let nickname = 'slb.glitch.me'
-
-  let skin = 10
-
-  let servers = await require('./serverlist.js')()
-
   let Client = require('slio')
 
   let WebSocket = require('ws')
@@ -12,6 +6,12 @@
   let expressWs = require('express-ws')(require('express')())
 
   let path = require('path')
+
+  let servers = await require('./serverlist.js')()
+
+  let nickname = 'rsl.glitch.me'
+
+  let skin = 10
 
   expressWs.app.get('/', function (req, res) {
     res.status(200).sendFile(path.join(__dirname, 'public', 'index.html'))
@@ -23,8 +23,8 @@
     })
     .ws('/', function (ws) {})
     .listen(process.env.PORT || 3000, function () {
-      for (let ip in servers) {
-        spawn(ip, servers[ip])
+      for (let server of servers) {
+        spawn(server.ip, server.port)
       }
 
       console.log(`Listening on *:${this.address().port}`)
