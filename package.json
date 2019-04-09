@@ -2,7 +2,7 @@
   "scripts": {
     "fix": "standard --verbose --fix",
     "test": "standard --verbose",
-    "start": "node server"
+    "start": "node main"
   },
   "dependencies": {
     "got": "9.6.0",
