@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "got": "9.6.0",
-    "slio": "1.0.0"
+    "slio": "2.0.1"
   },
   "devDependencies": {
     "standard": "12.0.1"
