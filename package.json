@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "got": "9.6.0",
-    "slio": "2.0.1",
+    "slio": "2.0.2",
     "yargs": "13.2.2"
   },
   "devDependencies": {
