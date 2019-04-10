@@ -1,4 +1,17 @@
 (async function () {
+  let args = require('yargs')
+    .option('nickname', {
+      alias: 'n',
+      nargs: 1,
+      demandOption: true,
+      string: true
+    }).option('skin', {
+      alias: 's',
+      nargs: 1,
+      demandOption: true,
+      number: true
+    }).argv
+
   let Client = require('slio')
 
   let WebSocket = require('ws')
@@ -8,10 +21,6 @@
   let path = require('path')
 
   let servers = await require('./serverlist.js')()
-
-  let nickname = 'rsl.glitch.me'
-
-  let skin = 10
 
   expressWs.app.get('/', function (req, res) {
     res.status(200).sendFile(path.join(__dirname, 'public', 'index.html'))
@@ -31,7 +40,7 @@
     })
 
   function spawn (ip, port) {
-    let client = new Client(`ws://${ip}:${port}/slither`, nickname, skin)
+    let client = new Client(`ws://${ip}:${port}/slither`, args.nickname, args.skin)
 
     client.on('leaderboard', function (_or, totalPlayers, leaderboard) {
       let clients = [...expressWs.getWss().clients].filter(function (ws) {
