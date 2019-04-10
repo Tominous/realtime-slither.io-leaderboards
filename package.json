@@ -5,6 +5,8 @@
     "start": "node main --nickname rsl.glitch.me --skin 42"
   },
   "dependencies": {
+    "express": "4.16.4",
+    "express-ws": "4.0.0",
     "got": "9.6.0",
     "slio": "2.0.2",
     "yargs": "13.2.2"
