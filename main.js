@@ -58,5 +58,13 @@
     client.on('dead', function () {
       spawn(ip, port)
     })
+
+    client.on('new highscore of the day', function () {
+      spawn(ip, port)
+    })
+
+    client.on('v unknown', function () {
+      spawn(ip, port)
+    })
   }
 })()
