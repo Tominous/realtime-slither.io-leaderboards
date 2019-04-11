@@ -1,12 +1,10 @@
 (async function () {
   let args = require('yargs')
     .option('nickname', {
-      alias: 'n',
       nargs: 1,
       demandOption: true,
       string: true
     }).option('skin', {
-      alias: 's',
       nargs: 1,
       demandOption: true,
       number: true
