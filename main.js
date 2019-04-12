@@ -58,7 +58,7 @@
       buf.writeUInt8(s.length, o)
       o++
 
-      buf.write(s, o,s.length)
+      buf.write(s, o, s.length)
       o += s.length
 
       buf.writeUInt16BE(totalPlayers, o)
@@ -66,19 +66,19 @@
 
       for (let i = 0; i < 10; i++) {
         let info = leaderboard[i]
-        let infobuf = Buffer.alloc(4+info.nickname.length)
+        let infobuf = Buffer.alloc(4 + info.nickname.length)
         let io = 0
 
         infobuf.writeUInt8(info.nickname.length, io)
         io++
 
-        infobuf.write(info.nickname, io,info.nickname.length)
-        io+=info.nickname.length
-        
+        infobuf.write(info.nickname, io, info.nickname.length)
+        io += info.nickname.length
+
         infobuf.writeUIntBE(info.length, io, 3)
         io += 3
 
-        buf = Buffer.concat([buf,infobuf])
+        buf = Buffer.concat([buf, infobuf])
       }
 
       for (let ws of clients) {
@@ -104,7 +104,7 @@
       buf.writeUInt8(s.length, o)
       o++
 
-      buf.write(s, o,s.length)
+      buf.write(s, o, s.length)
       o += s.length
 
       buf = Buffer.concat([buf, Buffer.from(minimap)])
