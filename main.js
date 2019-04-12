@@ -58,7 +58,7 @@
       buf.writeUInt8(s.length, o)
       o++
 
-      buf.write(s, o, s.length)
+      buf.write(s, o)
       o += s.length
 
       buf.writeUInt16BE(totalPlayers, o)
@@ -72,7 +72,7 @@
         infobuf.writeUInt8(info.nickname.length, io)
         io++
 
-        infobuf.write(info.nickname, io, info.nickname.length)
+        infobuf.write(info.nickname, io)
         io += info.nickname.length
 
         infobuf.writeUIntBE(info.length, io, 3)
