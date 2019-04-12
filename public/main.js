@@ -1,13 +1,28 @@
 /* global WebSocket, location */
 
 (function () {
+  let td = new TextDecoder('utf-8')
+
   let cache = Object.create(null)
 
   let ws = new WebSocket(`${location.protocol.replace('http', 'ws')}//${location.host}/`)
 
+  ws.binaryType = 'arraybuffer'
+
   ws.onmessage = function (event) {
-    let json = JSON.parse(event.data)
-    let cached = cache[json.server]
+    let v = new DataView(event.data)
+    let o = 0
+
+    let type = v.getUint8(o)
+    o++
+
+    let sl = v.getUint8(o)
+    o++
+
+    let s = td.decode(event.data.slice(o, o + sl))
+    o += sl
+
+    let cached = cache[s]
 
     if (!cached) {
       let container = document.createElement('div')
@@ -31,45 +46,69 @@
       container.appendChild(canvas)
       document.body.appendChild(container)
 
-      cached = cache[json.server] = {
+      cached = cache[s] = {
         leaderboard,
         canvas,
         ctx
       }
     }
 
-    switch (json.type) {
-      case 'leaderboard': {
-        let totalScore = 0
+    switch (type) {
+      case 0: {
+        let leaderboard = []
 
-        for (let s of json.leaderboard) {
-          totalScore += s.length
+        let tp = v.getUint16(o)
+        o += 2
+
+        let ts = 0
+
+        while (o < event.data.byteLength) {
+          let nl = v.getUint8(o)
+          o++
+
+          let nickname = td.decode(event.data.slice(o, o + nl))
+          o += nl
+
+          let length = (v.getUint16(o) << 8) + v.getUint8(o + 2)
+          o += 3
+
+          ts += length
+
+          leaderboard.push({
+            nickname,
+            length
+          })
         }
 
-        cached.leaderboard.innerText = `${json.server}
+        cached.leaderboard.innerText = `${s}
 
-      Total score: ${totalScore}
-      Total players: ${json.totalPlayers}
+      Total players: ${tp}
+      Total score: ${ts}
 
-      #1 ${json.leaderboard[0].nickname} ${json.leaderboard[0].length}
-      #2 ${json.leaderboard[1].nickname} ${json.leaderboard[1].length}
-      #3 ${json.leaderboard[2].nickname} ${json.leaderboard[2].length}
-      #4 ${json.leaderboard[3].nickname} ${json.leaderboard[3].length}
-      #5 ${json.leaderboard[4].nickname} ${json.leaderboard[4].length}
-      #6 ${json.leaderboard[5].nickname} ${json.leaderboard[5].length}
-      #7 ${json.leaderboard[6].nickname} ${json.leaderboard[6].length}
-      #8 ${json.leaderboard[7].nickname} ${json.leaderboard[7].length}
-      #9 ${json.leaderboard[8].nickname} ${json.leaderboard[8].length}
-      #10 ${json.leaderboard[9].nickname} ${json.leaderboard[9].length}`
+      #1 ${leaderboard[0].nickname} ${leaderboard[0].length}
+      #2 ${leaderboard[1].nickname} ${leaderboard[1].length}
+      #3 ${leaderboard[2].nickname} ${leaderboard[2].length}
+      #4 ${leaderboard[3].nickname} ${leaderboard[3].length}
+      #5 ${leaderboard[4].nickname} ${leaderboard[4].length}
+      #6 ${leaderboard[5].nickname} ${leaderboard[5].length}
+      #7 ${leaderboard[6].nickname} ${leaderboard[6].length}
+      #8 ${leaderboard[7].nickname} ${leaderboard[7].length}
+      #9 ${leaderboard[8].nickname} ${leaderboard[8].length}
+      #10 ${leaderboard[9].nickname} ${leaderboard[9].length}`
 
         break
       }
 
-      case 'minimap': {
+      case 1: {
         cached.ctx.clearRect(0, 0, cached.canvas.width, cached.canvas.height)
 
-        for (let i = 0; i < json.minimap.length; i++) {
-          if (json.minimap[i]) { cached.ctx.fillRect((i % 80) + 80 - 80 + 12, (i / 80) + 80 - 80 + 12, 1, 1) }
+        let i = 0
+
+        while (o < event.data.byteLength) {
+          if (v.getUint8(o) === 1) { cached.ctx.fillRect((i % 80) + 80 - 80 + 12, (i / 80) + 80 - 80 + 12, 1, 1) }
+
+          i++
+          o++
         }
 
         break

@@ -45,8 +45,44 @@
         return ws.readyState === WebSocket.OPEN
       })
 
+      if (clients.length === 0) return
+
+      let s = `${ip}:${port}`
+      let o = 0
+
+      let buf = Buffer.alloc(4 + s.length)
+
+      buf.writeUInt8(0, o)
+      o++
+
+      buf.writeUInt8(s.length, o)
+      o++
+
+      buf.write(s, o,s.length)
+      o += s.length
+
+      buf.writeUInt16BE(totalPlayers, o)
+      o += 2
+
+      for (let i = 0; i < 10; i++) {
+        let info = leaderboard[i]
+        let infobuf = Buffer.alloc(4+info.nickname.length)
+        let io = 0
+
+        infobuf.writeUInt8(info.nickname.length, io)
+        io++
+
+        infobuf.write(info.nickname, io,info.nickname.length)
+        io+=info.nickname.length
+        
+        infobuf.writeUIntBE(info.length, io, 3)
+        io += 3
+
+        buf = Buffer.concat([buf,infobuf])
+      }
+
       for (let ws of clients) {
-        ws.send(JSON.stringify({ type: 'leaderboard', server: `${ip}:${port}`, totalPlayers, leaderboard }))
+        ws.send(buf)
       }
     })
 
@@ -55,8 +91,26 @@
         return ws.readyState === WebSocket.OPEN
       })
 
+      if (clients.length === 0) return
+
+      let s = `${ip}:${port}`
+      let o = 0
+
+      let buf = Buffer.alloc(2 + s.length)
+
+      buf.writeUInt8(1, o)
+      o++
+
+      buf.writeUInt8(s.length, o)
+      o++
+
+      buf.write(s, o,s.length)
+      o += s.length
+
+      buf = Buffer.concat([buf, Buffer.from(minimap)])
+
       for (let ws of clients) {
-        ws.send(JSON.stringify({ type: 'minimap', server: `${ip}:${port}`, minimap }))
+        ws.send(buf)
       }
     })
 
