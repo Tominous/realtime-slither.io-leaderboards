@@ -63,14 +63,14 @@
 
       for (let i = 0; i < 10; i++) {
         let info = leaderboard[i]
-        let infobuf = Buffer.alloc(4 + info.nickname.length)
+        let infobuf = Buffer.alloc(4 + info.nick.length)
         let io = 0
 
-        infobuf.writeUInt8(info.nickname.length, io)
+        infobuf.writeUInt8(info.nick.length, io)
         io++
 
-        infobuf.write(info.nickname, io)
-        io += info.nickname.length
+        infobuf.write(info.nick, io)
+        io += info.nick.length
 
         infobuf.writeUIntBE(info.length, io, 3)
         io += 3

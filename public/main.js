@@ -66,7 +66,7 @@
           let nl = v.getUint8(o)
           o++
 
-          let nickname = td.decode(event.data.slice(o, o + nl))
+          let nick = td.decode(event.data.slice(o, o + nl))
           o += nl
 
           let length = (v.getUint16(o) << 8) + v.getUint8(o + 2)
@@ -75,7 +75,7 @@
           ts += length
 
           leaderboard.push({
-            nickname,
+            nick,
             length
           })
         }
@@ -85,16 +85,16 @@
       Total players: ${tp}
       Total score: ${ts}
 
-      #1 ${leaderboard[0].nickname} ${leaderboard[0].length}
-      #2 ${leaderboard[1].nickname} ${leaderboard[1].length}
-      #3 ${leaderboard[2].nickname} ${leaderboard[2].length}
-      #4 ${leaderboard[3].nickname} ${leaderboard[3].length}
-      #5 ${leaderboard[4].nickname} ${leaderboard[4].length}
-      #6 ${leaderboard[5].nickname} ${leaderboard[5].length}
-      #7 ${leaderboard[6].nickname} ${leaderboard[6].length}
-      #8 ${leaderboard[7].nickname} ${leaderboard[7].length}
-      #9 ${leaderboard[8].nickname} ${leaderboard[8].length}
-      #10 ${leaderboard[9].nickname} ${leaderboard[9].length}`
+      #1 ${leaderboard[0].nick} ${leaderboard[0].length}
+      #2 ${leaderboard[1].nick} ${leaderboard[1].length}
+      #3 ${leaderboard[2].nick} ${leaderboard[2].length}
+      #4 ${leaderboard[3].nick} ${leaderboard[3].length}
+      #5 ${leaderboard[4].nick} ${leaderboard[4].length}
+      #6 ${leaderboard[5].nick} ${leaderboard[5].length}
+      #7 ${leaderboard[6].nick} ${leaderboard[6].length}
+      #8 ${leaderboard[7].nick} ${leaderboard[7].length}
+      #9 ${leaderboard[8].nick} ${leaderboard[8].length}
+      #10 ${leaderboard[9].nick} ${leaderboard[9].length}`
 
         break
       }
