@@ -24,18 +24,15 @@
     res.status(200).sendFile(path.join(__dirname, 'public', 'index.html'))
   }).get('/main.css', function (req, res) {
     res.status(200).sendFile(path.join(__dirname, 'public', 'main.css'))
-  })
-    .get('/main.js', function (req, res) {
-      res.status(200).sendFile(path.join(__dirname, 'public', 'main.js'))
-    })
-    .ws('/', function (ws) {})
-    .listen(process.env.PORT || 3000, function () {
-      for (let server of servers) {
-        spawn(server.ip, server.port)
-      }
+  }).get('/main.js', function (req, res) {
+    res.status(200).sendFile(path.join(__dirname, 'public', 'main.js'))
+  }).ws('/', function (ws) {}).listen(process.env.PORT || 3000, function () {
+    for (let server of servers) {
+      spawn(server.ip, server.port)
+    }
 
-      console.log(`Listening on *:${this.address().port}`)
-    })
+    console.log(`Listening on *:${this.address().port}`)
+  })
 
   function spawn (ip, port) {
     let client = new Client(`ws://${ip}:${port}/slither`, args.nickname, args.skin)
@@ -84,9 +81,7 @@
       for (let ws of clients) {
         ws.send(buf)
       }
-    })
-
-    client.on('minimap', function (minimap) {
+    }).on('minimap', function (minimap) {
       let clients = [...expressWs.getWss().clients].filter(function (ws) {
         return ws.readyState === WebSocket.OPEN
       })
@@ -112,19 +107,11 @@
       for (let ws of clients) {
         ws.send(buf)
       }
-    })
-
-    // TODO: bot
-
-    client.on('dead', function () {
+    }).on('dead', function () {
       spawn(ip, port)
-    })
-
-    client.on('new highscore of the day', function () {
+    }).on('new highscore of the day', function () {
       spawn(ip, port)
-    })
-
-    client.on('v unknown', function () {
+    }).on('v unknown', function () {
       spawn(ip, port)
     })
   }
