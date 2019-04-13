@@ -16,13 +16,13 @@
     let type = view.getUint8(offset)
     offset++
 
-    let sl = view.getUint8(offset)
+    let serverLength = view.getUint8(offset)
     offset++
 
-    let s = textDecoder.decode(event.data.slice(offset, offset + sl))
-    offset += sl
+    let server = textDecoder.decode(event.data.slice(offset, offset + serverLength))
+    offset += serverLength
 
-    let cached = cache[s]
+    let cached = cache[server]
 
     if (!cached) {
       let container = document.createElement('div')
@@ -46,7 +46,7 @@
       container.appendChild(canvas)
       document.body.appendChild(container)
 
-      cached = cache[s] = {
+      cached = cache[server] = {
         leaderboard,
         canvas,
         ctx
