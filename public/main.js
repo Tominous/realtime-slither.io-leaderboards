@@ -1,7 +1,7 @@
 /* global WebSocket, location */
 
 (function () {
-  let td = new TextDecoder('utf-8')
+  let textDecoder = new TextDecoder('utf-8')
 
   let cache = Object.create(null)
 
@@ -10,17 +10,17 @@
   ws.binaryType = 'arraybuffer'
 
   ws.onmessage = function (event) {
-    let v = new DataView(event.data)
-    let o = 0
+    let view = new DataView(event.data)
+    let offset = 0
 
-    let type = v.getUint8(o)
-    o++
+    let type = view.getUint8(offset)
+    offset++
 
-    let sl = v.getUint8(o)
-    o++
+    let sl = view.getUint8(offset)
+    offset++
 
-    let s = td.decode(event.data.slice(o, o + sl))
-    o += sl
+    let s = textDecoder.decode(event.data.slice(offset, offset + sl))
+    offset += sl
 
     let cached = cache[s]
 
@@ -57,44 +57,44 @@
       case 0: {
         let leaderboard = []
 
-        let tp = v.getUint16(o)
-        o += 2
+        let totalPlayers = view.getUint16(offset)
+        offset += 2
 
-        let ts = 0
+        let totalScore = 0
 
-        while (o < event.data.byteLength) {
-          let nl = v.getUint8(o)
-          o++
+        while (offset < event.data.byteLength) {
+          let nicknameLength = view.getUint8(offset)
+          offset++
 
-          let nick = td.decode(event.data.slice(o, o + nl))
-          o += nl
+          let nickname = textDecoder.decode(event.data.slice(offset, offset + nicknameLength))
+          offset += nicknameLength
 
-          let length = (v.getUint16(o) << 8) + v.getUint8(o + 2)
-          o += 3
+          let length = (view.getUint16(offset) << 8) + view.getUint8(offset + 2)
+          offset += 3
 
-          ts += length
+          totalScore += length
 
           leaderboard.push({
-            nick,
+            nickname,
             length
           })
         }
 
         cached.leaderboard.innerText = `${s}
 
-      Total players: ${tp}
-      Total score: ${ts}
+      Total players: ${totalPlayers}
+      Total score: ${totalScore}
 
-      #1 ${leaderboard[0].nick} ${leaderboard[0].length}
-      #2 ${leaderboard[1].nick} ${leaderboard[1].length}
-      #3 ${leaderboard[2].nick} ${leaderboard[2].length}
-      #4 ${leaderboard[3].nick} ${leaderboard[3].length}
-      #5 ${leaderboard[4].nick} ${leaderboard[4].length}
-      #6 ${leaderboard[5].nick} ${leaderboard[5].length}
-      #7 ${leaderboard[6].nick} ${leaderboard[6].length}
-      #8 ${leaderboard[7].nick} ${leaderboard[7].length}
-      #9 ${leaderboard[8].nick} ${leaderboard[8].length}
-      #10 ${leaderboard[9].nick} ${leaderboard[9].length}`
+      #1 ${leaderboard[0].nickname} ${leaderboard[0].length}
+      #2 ${leaderboard[1].nickname} ${leaderboard[1].length}
+      #3 ${leaderboard[2].nickname} ${leaderboard[2].length}
+      #4 ${leaderboard[3].nickname} ${leaderboard[3].length}
+      #5 ${leaderboard[4].nickname} ${leaderboard[4].length}
+      #6 ${leaderboard[5].nickname} ${leaderboard[5].length}
+      #7 ${leaderboard[6].nickname} ${leaderboard[6].length}
+      #8 ${leaderboard[7].nickname} ${leaderboard[7].length}
+      #9 ${leaderboard[8].nickname} ${leaderboard[8].length}
+      #10 ${leaderboard[9].nickname} ${leaderboard[9].length}`
 
         break
       }
@@ -104,11 +104,11 @@
 
         let i = 0
 
-        while (o < event.data.byteLength) {
-          if (v.getUint8(o) === 1) { cached.ctx.fillRect((i % 80) + 80 - 80 + 12, (i / 80) + 80 - 80 + 12, 1, 1) }
+        while (offset < event.data.byteLength) {
+          if (view.getUint8(offset) === 1) { cached.ctx.fillRect((i % 80) + 80 - 80 + 12, (i / 80) + 80 - 80 + 12, 1, 1) }
 
           i++
-          o++
+          offset++
         }
 
         break

@@ -10,7 +10,7 @@
       number: true
     }).argv
 
-  let Client = require('slio')
+  let Client = require('slitherode')
 
   let WebSocket = require('ws')
 
@@ -37,49 +37,49 @@
   function spawn (ip, port) {
     let client = new Client(`ws://${ip}:${port}/slither`, args.nickname, args.skin)
 
-    client.on('leaderboard', function (_or, totalPlayers, leaderboard) {
+    client.on('leaderboard', function (_ownRank, totalPlayers, leaderboard) {
       let clients = [...expressWs.getWss().clients].filter(function (ws) {
         return ws.readyState === WebSocket.OPEN
       })
 
       if (clients.length === 0) return
 
-      let s = `${ip}:${port}`
-      let o = 0
+      let serverString = `${ip}:${port}`
+      let offset = 0
 
-      let buf = Buffer.alloc(4 + s.length)
+      let buffer = Buffer.alloc(4 + serverString.length)
 
-      buf.writeUInt8(0, o)
-      o++
+      buffer.writeUInt8(0, offset)
+      offset++
 
-      buf.writeUInt8(s.length, o)
-      o++
+      buffer.writeUInt8(serverString.length, offset)
+      offset++
 
-      buf.write(s, o)
-      o += s.length
+      buffer.write(serverString, offset)
+      offset += serverString.length
 
-      buf.writeUInt16BE(totalPlayers, o)
-      o += 2
+      buffer.writeUInt16BE(totalPlayers, offset)
+      offset += 2
 
       for (let i = 0; i < 10; i++) {
-        let info = leaderboard[i]
-        let infobuf = Buffer.alloc(4 + info.nick.length)
-        let io = 0
+        let snake = leaderboard[i]
+        let snakeBuffer = Buffer.alloc(4 + snake.nickname.length)
+        let snakeBufferOffset = 0
 
-        infobuf.writeUInt8(info.nick.length, io)
-        io++
+        snakeBuffer.writeUInt8(snake.nickname.length, snakeBufferOffset)
+        snakeBufferOffset++
 
-        infobuf.write(info.nick, io)
-        io += info.nick.length
+        snakeBuffer.write(snake.nickname, snakeBufferOffset)
+        snakeBufferOffset += snake.nickname.length
 
-        infobuf.writeUIntBE(info.length, io, 3)
-        io += 3
+        snakeBuffer.writeUIntBE(snake.length, snakeBufferOffset, 3)
+        snakeBufferOffset += 3
 
-        buf = Buffer.concat([buf, infobuf])
+        buffer = Buffer.concat([buffer, snakeBuffer])
       }
 
       for (let ws of clients) {
-        ws.send(buf)
+        ws.send(buffer)
       }
     }).on('minimap', function (minimap) {
       let clients = [...expressWs.getWss().clients].filter(function (ws) {
@@ -88,24 +88,24 @@
 
       if (clients.length === 0) return
 
-      let s = `${ip}:${port}`
-      let o = 0
+      let serverString = `${ip}:${port}`
+      let offset = 0
 
-      let buf = Buffer.alloc(2 + s.length)
+      let buffer = Buffer.alloc(2 + serverString.length)
 
-      buf.writeUInt8(1, o)
-      o++
+      buffer.writeUInt8(1, offset)
+      offset++
 
-      buf.writeUInt8(s.length, o)
-      o++
+      buffer.writeUInt8(serverString.length, offset)
+      offset++
 
-      buf.write(s, o, s.length)
-      o += s.length
+      buffer.write(serverString, offset)
+      offset += serverString.length
 
-      buf = Buffer.concat([buf, Buffer.from(minimap)])
+      buffer = Buffer.concat([buffer, Buffer.from(minimap)])
 
       for (let ws of clients) {
-        ws.send(buf)
+        ws.send(buffer)
       }
     }).on('dead', function () {
       spawn(ip, port)
