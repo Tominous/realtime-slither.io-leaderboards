@@ -30,6 +30,8 @@
       container.style.border = '1px solid #4CAF50'
       container.style.width = '400px'
       container.style.height = '370px'
+      container.style.paddingRight = '10px'
+      container.style.paddingBottom = '10px'
 
       let leaderboard = document.createElement('div')
       container.appendChild(leaderboard)
@@ -80,7 +82,7 @@
           })
         }
 
-        cached.leaderboard.innerText = `${s}
+        cached.leaderboard.innerText = `${server}
 
       Total players: ${totalPlayers}
       Total score: ${totalScore}
