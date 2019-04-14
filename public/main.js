@@ -1,12 +1,10 @@
 /* global WebSocket, location */
 
 (function () {
+  let cache = Object.create(null)
   let textDecoder = new TextDecoder('utf-8')
 
-  let cache = Object.create(null)
-
   let ws = new WebSocket(`${location.protocol.replace('http', 'ws')}//${location.host}/`)
-
   ws.binaryType = 'arraybuffer'
 
   ws.onmessage = function (event) {
@@ -44,7 +42,6 @@
       ctx.fillStyle = 'rgba(255, 255, 255, 0.40)'
 
       container.appendChild(canvas)
-
       document.body.appendChild(container)
 
       cached = cache[server] = {

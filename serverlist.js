@@ -2,9 +2,7 @@ let got = require('got')
 
 module.exports = async function () {
   let res = await got('http://slither.io/i33628.txt')
-
   let servers = []
-
   let dropped = res.body.split('').slice(1)
 
   let converted = dropped.map(function (c) {
@@ -28,11 +26,9 @@ module.exports = async function () {
 
   while (i < buf.length) {
     let ip = Array.from(buf.slice(i, i + 4)).join('.')
-
     i += 4
 
     let port = buf.readUIntBE(i, 3)
-
     i += 7
 
     if (ip !== '0.0.0.0') {
