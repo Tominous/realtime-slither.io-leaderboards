@@ -1,5 +1,13 @@
-(async function () {
-  let args = require('yargs')
+let Client = require('slitherode')
+let express = require('express')
+let expressWs = require('express-ws')
+let getServers = require('./serverlist')
+let path = require('path')
+let WebSocket = require('ws')
+let yargs = require('yargs')
+
+;(async function () {
+  let args = yargs()
     .option('nickname', {
       nargs: 1,
       demandOption: true,
@@ -10,23 +18,19 @@
       number: true
     }).argv
 
-  let Client = require('slitherode')
+  let servers = await getServers()
+  let app = express()
+  let wsInstance = expressWs(app)
 
-  let WebSocket = require('ws')
-
-  let expressWs = require('express-ws')(require('express')())
-
-  let path = require('path')
-
-  let servers = await require('./serverlist.js')()
-
-  expressWs.app.get('/', function (req, res) {
+  app.get('/', function (_req, res) {
     res.status(200).sendFile(path.join(__dirname, 'public', 'index.html'))
-  }).get('/main.css', function (req, res) {
+  }).get('/main.css', function (_req, res) {
     res.status(200).sendFile(path.join(__dirname, 'public', 'main.css'))
-  }).get('/main.js', function (req, res) {
+  }).get('/main.js', function (_req, res) {
     res.status(200).sendFile(path.join(__dirname, 'public', 'main.js'))
-  }).ws('/', function (ws) {}).listen(process.env.PORT || 3000, function () {
+  }).ws('/', function () {
+    // do nothing
+  }).listen(process.env.PORT || 3000, function () {
     for (let server of servers) {
       spawn(server.ip, server.port)
     }
@@ -38,7 +42,7 @@
     let client = new Client(`ws://${ip}:${port}/slither`, args.nickname, args.skin)
 
     client.on('leaderboard', function (_ownRank, totalPlayers, leaderboard) {
-      let clients = [...expressWs.getWss().clients].filter(function (ws) {
+      let clients = [...wsInstance.getWss().clients].filter(function (ws) {
         return ws.readyState === WebSocket.OPEN
       })
 
@@ -46,7 +50,6 @@
 
       let serverString = `${ip}:${port}`
       let offset = 0
-
       let buffer = Buffer.alloc(4 + serverString.length)
 
       buffer.writeUInt8(0, offset)
@@ -82,7 +85,7 @@
         ws.send(buffer)
       }
     }).on('minimap', function (minimap) {
-      let clients = [...expressWs.getWss().clients].filter(function (ws) {
+      let clients = [...wsInstance.getWss().clients].filter(function (ws) {
         return ws.readyState === WebSocket.OPEN
       })
 
@@ -90,7 +93,6 @@
 
       let serverString = `${ip}:${port}`
       let offset = 0
-
       let buffer = Buffer.alloc(2 + serverString.length)
 
       buffer.writeUInt8(1, offset)
