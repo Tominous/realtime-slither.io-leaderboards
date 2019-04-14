@@ -7,7 +7,7 @@ let WebSocket = require('ws')
 let yargs = require('yargs')
 
 ;(async function () {
-  let args = yargs()
+  let args = yargs
     .option('nickname', {
       nargs: 1,
       demandOption: true,
