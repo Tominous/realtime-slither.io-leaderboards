@@ -20,7 +20,7 @@ let yargs = require('yargs')
 
   let servers = await getServers()
   let app = express()
-  let wsInstance = expressWs(app)
+  let expressWsInstance = expressWs(app)
 
   app.get('/', function (_req, res) {
     res.status(200).sendFile(path.join(__dirname, 'public', 'index.html'))
@@ -42,11 +42,11 @@ let yargs = require('yargs')
     let client = new Client(`ws://${ip}:${port}/slither`, args.nickname, args.skin)
 
     client.on('leaderboard', function (_ownRank, totalPlayers, leaderboard) {
-      let clients = [...wsInstance.getWss().clients].filter(function (ws) {
-        return ws.readyState === WebSocket.OPEN
+      let connectedSockets = [...expressWsInstance.getWss().clients].filter(function (socket) {
+        return socket.readyState === WebSocket.OPEN
       })
 
-      if (clients.length === 0) return
+      if (connectedSockets.length === 0) return
 
       let serverString = `${ip}:${port}`
       let offset = 0
@@ -81,15 +81,15 @@ let yargs = require('yargs')
         buffer = Buffer.concat([buffer, snakeBuffer])
       }
 
-      for (let ws of clients) {
-        ws.send(buffer)
+      for (let socket of connectedSockets) {
+        socket.send(buffer)
       }
     }).on('minimap', function (minimap) {
-      let clients = [...wsInstance.getWss().clients].filter(function (ws) {
-        return ws.readyState === WebSocket.OPEN
+      let connectedSockets = [...expressWsInstance.getWss().clients].filter(function (socket) {
+        return socket.readyState === WebSocket.OPEN
       })
 
-      if (clients.length === 0) return
+      if (connectedSockets.length === 0) return
 
       let serverString = `${ip}:${port}`
       let offset = 0
@@ -106,8 +106,8 @@ let yargs = require('yargs')
 
       buffer = Buffer.concat([buffer, Buffer.from(minimap)])
 
-      for (let ws of clients) {
-        ws.send(buffer)
+      for (let socket of connectedSockets) {
+        socket.send(buffer)
       }
     }).on('dead', function () {
       spawn(ip, port)

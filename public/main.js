@@ -4,10 +4,10 @@
   let cache = Object.create(null)
   let textDecoder = new TextDecoder('utf-8')
 
-  let ws = new WebSocket(`${location.protocol.replace('http', 'ws')}//${location.host}/`)
-  ws.binaryType = 'arraybuffer'
+  let socket = new WebSocket(`${location.protocol.replace('http', 'ws')}//${location.host}/`)
+  socket.binaryType = 'arraybuffer'
 
-  ws.onmessage = function (event) {
+  socket.onmessage = function (event) {
     let view = new DataView(event.data)
     let offset = 0
 
