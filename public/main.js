@@ -1,4 +1,4 @@
-/* global WebSocket, location */
+/* eslint-env browser */
 
 (function () {
   let cache = Object.create(null)
