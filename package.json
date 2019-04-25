@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "fix": "standard --verbose --fix",
-    "test": "standard --verbose",
-    "start": "node main --nickname rsl.glitch.me --skin 42"
+    "start": "node main --nickname rsl.glitch.me --skin 42",
+    "test": "standard",
+    "fix": "standard --fix"
   },
   "dependencies": {
     "express": "4.16.4",
