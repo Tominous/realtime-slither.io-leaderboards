@@ -1,7 +1,7 @@
 /* eslint-env browser */
 
 (function () {
-  let cache = Object.create(null)
+  let cache = {}
   let textDecoder = new TextDecoder('utf-8')
 
   let socket = new WebSocket(`${location.protocol.replace('http', 'ws')}//${location.host}/`)
@@ -24,13 +24,19 @@
 
     if (!cached) {
       let container = document.createElement('div')
-      container.style.display = 'inline-block'
-      container.style.border = '1px solid #4CAF50'
-      container.style.width = '400px'
-      container.style.height = '370px'
+      container.className = 'box'
 
-      let leaderboard = document.createElement('div')
-      container.appendChild(leaderboard)
+      let box = document.createElement('div')
+      box.className = 'media'
+      box.style.display = 'inline-block'
+
+      let figureContainer = document.createElement('div')
+      figureContainer.className = 'media-left'
+      figureContainer.style.display = 'inline-block'
+      figureContainer.style.verticalAlign = 'top'
+
+      let figure = document.createElement('figure')
+      figure.className = 'image is-128x128'
 
       let canvas = document.createElement('canvas')
       canvas.width = 104
@@ -41,7 +47,25 @@
       let ctx = canvas.getContext('2d')
       ctx.fillStyle = 'rgba(255, 255, 255, 0.40)'
 
-      container.appendChild(canvas)
+      figure.appendChild(canvas)
+      figureContainer.appendChild(figure)
+      box.appendChild(figureContainer)
+
+      let contentContainer = document.createElement('div')
+      contentContainer.className = 'media-content'
+      contentContainer.style.display = 'inline-block'
+
+      let leaderboardContainer = document.createElement('div')
+      leaderboardContainer.className = 'content'
+
+      let leaderboard = document.createElement('p')
+      leaderboard.innerText = 'Loading'
+
+      leaderboardContainer.appendChild(leaderboard)
+      contentContainer.appendChild(leaderboardContainer)
+      box.appendChild(contentContainer)
+
+      container.appendChild(box)
       document.body.appendChild(container)
 
       cached = cache[server] = {
