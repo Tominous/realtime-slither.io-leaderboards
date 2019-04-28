@@ -1,7 +1,7 @@
 let got = require('got')
 
 /**
- * Gets the server list
+ * Get the server list
  *
  * @returns {Promise} a array of objects with following properties:
  *  ip: string
