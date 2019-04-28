@@ -1,7 +1,7 @@
 let Client = require('slitherode')
 let express = require('express')
 let expressWs = require('express-ws')
-let getServers = require('./serverlist')
+let getServers = require('./server-list')
 let path = require('path')
 let WebSocket = require('ws')
 let yargs = require('yargs')
@@ -23,7 +23,7 @@ let yargs = require('yargs')
   let expressWsInstance = expressWs(app)
 
   app.get('/', function (_req, res) {
-    res.status(200).sendFile(path.join(__dirname, 'public', 'index.html'))
+    res.status(200).sendFile(path.join(__dirname, 'public', 'main.html'))
   }).get('/main.css', function (_req, res) {
     res.status(200).sendFile(path.join(__dirname, 'public', 'main.css'))
   }).get('/main.js', function (_req, res) {

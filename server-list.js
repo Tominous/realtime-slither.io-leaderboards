@@ -1,6 +1,13 @@
 let got = require('got')
 
-module.exports = async function () {
+/**
+ * Gets the server list
+ *
+ * @returns {Promise} a array of objects with following properties:
+ *  ip: string
+ *  port: number
+ */
+module.exports = async function getServers () {
   let res = await got('http://slither.io/i33628.txt')
   let servers = []
   let dropped = res.body.split('').slice(1)
