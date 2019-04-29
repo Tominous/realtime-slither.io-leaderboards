@@ -16,7 +16,8 @@ let yargs = require('yargs')
       nargs: 1,
       demandOption: true,
       number: true
-    }).argv
+    }).version(false)
+    .argv
 
   let servers = await getServers()
   let app = express()
