@@ -7,7 +7,7 @@ let WebSocket = require('ws')
 let yargs = require('yargs')
 
 ;(async function () {
-  let args = yargs
+  let options = yargs
     .option('nickname', {
       nargs: 1,
       demandOption: true,
@@ -20,27 +20,28 @@ let yargs = require('yargs')
     .argv
 
   let servers = await getServers()
-  let app = express()
-  let expressWsInstance = expressWs(app)
+  let application = express()
+  let expressWsInstance = expressWs(application)
 
-  app.get('/', function (_req, res) {
-    res.status(200).sendFile(path.join(__dirname, 'public', 'main.html'))
-  }).get('/main.css', function (_req, res) {
-    res.status(200).sendFile(path.join(__dirname, 'public', 'main.css'))
-  }).get('/main.js', function (_req, res) {
-    res.status(200).sendFile(path.join(__dirname, 'public', 'main.js'))
+  application.get('/', function (_request, response) {
+    response.status(200).sendFile(path.join(__dirname, 'public', 'main.html'))
+  }).get('/main.css', function (_request, response) {
+    response.status(200).sendFile(path.join(__dirname, 'public', 'main.css'))
+  }).get('/main.js', function (_request, response) {
+    response.status(200).sendFile(path.join(__dirname, 'public', 'main.js'))
   }).ws('/', function () {
     // do nothing
-  }).listen(process.env.PORT || 3000, function () {
-    for (let server of servers) {
-      spawn(server.ip, server.port)
-    }
-
-    console.log(`Listening on *:${this.address().port}`)
   })
 
+  let listener = application.listen(process.env.PORT || 3000)
+  console.log(`Listening on *:${listener.address().port}`)
+
+  for (let server of servers) {
+    spawn(server.ip, server.port)
+  }
+
   function spawn (ip, port) {
-    let client = new Client(`ws://${ip}:${port}/slither`, args.nickname, args.skin)
+    let client = new Client(`ws://${ip}:${port}/slither`, options.nickname, options.skin)
 
     client.on('leaderboard', function (_ownRank, totalPlayers, leaderboard) {
       let connectedSockets = [...expressWsInstance.getWss().clients].filter(function (socket) {
@@ -65,8 +66,8 @@ let yargs = require('yargs')
       buffer.writeUInt16BE(totalPlayers, offset)
       offset += 2
 
-      for (let i = 0; i < 10; i++) {
-        let snake = leaderboard[i]
+      for (let index = 0; index < 10; index++) {
+        let snake = leaderboard[index]
         let snakeBuffer = Buffer.alloc(4 + snake.nickname.length)
         let snakeBufferOffset = 0
 
