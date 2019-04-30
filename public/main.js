@@ -44,8 +44,8 @@
       canvas.style.width = '104px'
       canvas.style.height = '104px'
 
-      let ctx = canvas.getContext('2d')
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.40)'
+      let context = canvas.getContext('2d')
+      context.fillStyle = 'rgba(255, 255, 255, 0.40)'
 
       figure.appendChild(canvas)
       figureContainer.appendChild(figure)
@@ -71,7 +71,7 @@
       cached = cache[server] = {
         leaderboard,
         canvas,
-        ctx
+        context
       }
     }
 
@@ -122,12 +122,12 @@
       }
 
       case 1: {
-        cached.ctx.clearRect(0, 0, cached.canvas.width, cached.canvas.height)
+        cached.context.clearRect(0, 0, cached.canvas.width, cached.canvas.height)
 
         let i = 0
 
         while (offset < event.data.byteLength) {
-          if (view.getUint8(offset) === 1) { cached.ctx.fillRect((i % 80) + 80 - 80 + 12, (i / 80) + 80 - 80 + 12, 1, 1) }
+          if (view.getUint8(offset) === 1) { cached.context.fillRect((i % 80) + 80 - 80 + 12, (i / 80) + 80 - 80 + 12, 1, 1) }
 
           i++
           offset++
