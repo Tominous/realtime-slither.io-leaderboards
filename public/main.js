@@ -59,6 +59,10 @@
       contentContainer.className = 'media-content'
       contentContainer.style.display = 'inline-block'
 
+      let serverContent = document.createElement('div')
+      serverContent.className = 'content'
+      serverContent.innerText = server
+
       let botPosition = document.createElement('div')
       botPosition.className = 'content'
       botPosition.innerText = 'Loading'
@@ -67,6 +71,7 @@
       leaderboard.className = 'content'
       leaderboard.innerText = 'Loading'
 
+      contentContainer.appendChild(serverContent)
       contentContainer.appendChild(botPosition)
       contentContainer.appendChild(leaderboard)
       box.appendChild(contentContainer)
