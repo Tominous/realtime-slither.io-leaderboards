@@ -91,6 +91,9 @@
       case 0: {
         let leaderboard = []
 
+        let botRank = view.getUint16(offset)
+        offset += 2
+
         let totalPlayers = view.getUint16(offset)
         offset += 2
 
@@ -114,7 +117,8 @@
           })
         }
 
-        cached.leaderboard.innerText = `Total players: ${totalPlayers}
+        cached.leaderboard.innerText = `Bot's rank: ${botRank}
+      Total players: ${totalPlayers}
       Total score: ${totalScore}
 
       #1 ${leaderboard[0].nickname} ${leaderboard[0].length}

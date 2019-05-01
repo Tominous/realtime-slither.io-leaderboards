@@ -43,7 +43,7 @@ let yargs = require('yargs')
   function spawn (ip, port) {
     let client = new Client(`ws://${ip}:${port}/slither`, options.nickname, options.skin)
 
-    client.on('leaderboard', function (_ownRank, totalPlayers, leaderboard) {
+    client.on('leaderboard', function (botRank, totalPlayers, leaderboard) {
       let connectedSockets = [...expressWsInstance.getWss().clients].filter(function (socket) {
         return socket.readyState === WebSocket.OPEN
       })
@@ -51,12 +51,13 @@ let yargs = require('yargs')
       if (connectedSockets.length === 0) return
 
       let serverString = `${ip}:${port}`
-      let buffer = Buffer.alloc(4 + serverString.length)
+      let buffer = Buffer.alloc(6 + serverString.length)
 
       // eslint-disable-next-line no-unused-vars
       let offset = buffer.writeUInt8(0, 0)
       offset = buffer.writeUInt8(serverString.length, offset)
       offset += buffer.write(serverString, offset)
+      offset = buffer.writeUInt16BE(botRank, offset)
       offset = buffer.writeUInt16BE(totalPlayers, offset)
 
       for (let index = 0; index < 10; index++) {
