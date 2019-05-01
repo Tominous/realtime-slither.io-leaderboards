@@ -105,7 +105,7 @@ let yargs = require('yargs')
         let snake = client.snakes[id]
 
         let serverString = `${ip}:${port}`
-        let buffer = Buffer.alloc(6 + serverString.length)
+        let buffer = Buffer.alloc(8 + serverString.length)
 
         // eslint-disable-next-line no-unused-vars
         let offset = buffer.writeUInt8(2, 0)
@@ -113,6 +113,7 @@ let yargs = require('yargs')
         offset += buffer.write(serverString, offset)
         offset = buffer.writeUInt16BE(snake.x, offset)
         offset = buffer.writeUInt16BE(snake.y, offset)
+        offset = buffer.writeUInt16BE(client.length(id), offset)
 
         for (let socket of connectedSockets) {
           socket.send(buffer)

@@ -63,16 +63,16 @@
       serverContent.className = 'content'
       serverContent.innerText = server
 
-      let botPosition = document.createElement('div')
-      botPosition.className = 'content'
-      botPosition.innerText = 'Loading'
+      let botPositionAndLength = document.createElement('div')
+      botPositionAndLength.className = 'content'
+      botPositionAndLength.innerText = 'Loading'
 
       let leaderboard = document.createElement('div')
       leaderboard.className = 'content'
       leaderboard.innerText = 'Loading'
 
       contentContainer.appendChild(serverContent)
-      contentContainer.appendChild(botPosition)
+      contentContainer.appendChild(botPositionAndLength)
       contentContainer.appendChild(leaderboard)
       box.appendChild(contentContainer)
 
@@ -82,7 +82,7 @@
       cached = cache[server] = {
         canvas,
         context,
-        botPosition,
+        botPositionAndLength,
         leaderboard
       }
     }
@@ -157,7 +157,11 @@
         let y = view.getUint16(offset)
         offset += 2
 
-        cached.botPosition.innerText = `Bot's position: ${x}x${y}`
+        let length = view.getUint16(offset)
+        offset += 2
+
+        cached.botPositionAndLength.innerText = `Bot's position: ${x}x${y}
+        Bot's length: ${length}`
 
         break
       }
