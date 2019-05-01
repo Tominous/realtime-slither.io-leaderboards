@@ -51,34 +51,21 @@ let yargs = require('yargs')
       if (connectedSockets.length === 0) return
 
       let serverString = `${ip}:${port}`
-      let offset = 0
       let buffer = Buffer.alloc(4 + serverString.length)
 
-      buffer.writeUInt8(0, offset)
-      offset++
-
-      buffer.writeUInt8(serverString.length, offset)
-      offset++
-
-      buffer.write(serverString, offset)
-      offset += serverString.length
-
-      buffer.writeUInt16BE(totalPlayers, offset)
-      offset += 2
+      // eslint-disable-next-line no-unused-vars
+      let offset = buffer.writeUInt8(0, 0)
+      offset = buffer.writeUInt8(serverString.length, offset)
+      offset += buffer.write(serverString, offset)
+      offset = buffer.writeUInt16BE(totalPlayers, offset)
 
       for (let index = 0; index < 10; index++) {
         let snake = leaderboard[index]
         let snakeBuffer = Buffer.alloc(4 + snake.nickname.length)
-        let snakeBufferOffset = 0
 
-        snakeBuffer.writeUInt8(snake.nickname.length, snakeBufferOffset)
-        snakeBufferOffset++
-
-        snakeBuffer.write(snake.nickname, snakeBufferOffset)
-        snakeBufferOffset += snake.nickname.length
-
-        snakeBuffer.writeUIntBE(snake.length, snakeBufferOffset, 3)
-        snakeBufferOffset += 3
+        let snakeBufferOffset = snakeBuffer.writeUInt8(snake.nickname.length, 0)
+        snakeBufferOffset += snakeBuffer.write(snake.nickname, snakeBufferOffset)
+        snakeBufferOffset = snakeBuffer.writeUIntBE(snake.length, snakeBufferOffset, 3)
 
         buffer = Buffer.concat([buffer, snakeBuffer])
       }
@@ -94,29 +81,85 @@ let yargs = require('yargs')
       if (connectedSockets.length === 0) return
 
       let serverString = `${ip}:${port}`
-      let offset = 0
       let buffer = Buffer.alloc(2 + serverString.length)
 
-      buffer.writeUInt8(1, offset)
-      offset++
-
-      buffer.writeUInt8(serverString.length, offset)
-      offset++
-
-      buffer.write(serverString, offset)
-      offset += serverString.length
+      // eslint-disable-next-line no-unused-vars
+      let offset = buffer.writeUInt8(1, 0)
+      offset = buffer.writeUInt8(serverString.length, offset)
+      offset += buffer.write(serverString, offset)
 
       buffer = Buffer.concat([buffer, Buffer.from(minimap)])
 
       for (let socket of connectedSockets) {
         socket.send(buffer)
       }
-    }).on('dead', function () {
-      spawn(ip, port)
-    }).on('new highscore of the day', function () {
-      spawn(ip, port)
-    }).on('v unknown', function () {
-      spawn(ip, port)
+    }).on('move', function (id) {
+      if (id === client.snakeId) {
+        let connectedSockets = [...expressWsInstance.getWss().clients].filter(function (socket) {
+          return socket.readyState === WebSocket.OPEN
+        })
+
+        if (connectedSockets.length === 0) return
+
+        let snake = client.snakes[id]
+
+        let serverString = `${ip}:${port}`
+        let buffer = Buffer.alloc(6 + serverString.length)
+
+        // eslint-disable-next-line no-unused-vars
+        let offset = buffer.writeUInt8(2, 0)
+        offset = buffer.writeUInt8(serverString.length, offset)
+        offset += buffer.write(serverString, offset)
+        offset = buffer.writeUInt16BE(snake.x, offset)
+        offset = buffer.writeUInt16BE(snake.y, offset)
+
+        for (let socket of connectedSockets) {
+          socket.send(buffer)
+        }
+      }
+    }).on('add snake', function (id) {
+      if (id === client.snakeId) {
+        (function loop () {
+          if (!client.connected || !client.snakes[client.snakeId]) return spawn(ip, port)
+
+          let me = client.snakes[client.snakeId]
+
+          let goAway = Object.keys(client.snakes).filter(function (id) {
+            if (Number(id) === client.snakeId) return false
+
+            let other = client.snakes[id]
+            let distance = Math.abs(Math.round(other.x - me.x)) + Math.abs(Math.round(other.y - me.y))
+
+            return distance < 300
+          }).sort(function (a, b) {
+            let distanceA = Math.abs(Math.round(a.x - me.x)) + Math.abs(Math.round(a.y - me.y))
+            let distanceB = Math.abs(Math.round(b.x - me.x)) + Math.abs(Math.round(b.y - me.y))
+
+            return distanceA - distanceB
+          })
+
+          if (goAway.length !== 0) {
+            let snake = client.snakes[goAway[0]]
+
+            client.move(-snake.x, -snake.y)
+          } else {
+            let foods = Object.values(client.foods).sort(function (a, b) {
+              let distanceA = Math.abs(Math.round(a.x - me.x)) + Math.abs(Math.round(a.y - me.y))
+              let distanceB = Math.abs(Math.round(b.x - me.x)) + Math.abs(Math.round(b.y - me.y))
+
+              return distanceA - distanceB
+            })
+
+            if (foods.length > 0) {
+              let food = foods[0]
+
+              client.move(food.x, food.y)
+            }
+          }
+
+          setTimeout(loop, 100)
+        })()
+      }
     })
   }
 })()

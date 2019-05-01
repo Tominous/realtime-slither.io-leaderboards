@@ -22,7 +22,7 @@
 
     let cached = cache[server]
 
-    if (!cached) {
+    if (typeof cached === 'undefined') {
       let container = document.createElement('div')
       container.className = 'box'
 
@@ -46,6 +46,10 @@
 
       let context = canvas.getContext('2d')
       context.fillStyle = 'rgba(255, 255, 255, 0.40)'
+      context.textAlign = 'center'
+      context.textBaseline = 'middle'
+
+      context.fillText('Loading', canvas.width / 2, canvas.height / 2)
 
       figure.appendChild(canvas)
       figureContainer.appendChild(figure)
@@ -55,23 +59,26 @@
       contentContainer.className = 'media-content'
       contentContainer.style.display = 'inline-block'
 
-      let leaderboardContainer = document.createElement('div')
-      leaderboardContainer.className = 'content'
+      let botPosition = document.createElement('div')
+      botPosition.className = 'content'
+      botPosition.innerText = 'Loading'
 
-      let leaderboard = document.createElement('p')
+      let leaderboard = document.createElement('div')
+      leaderboard.className = 'content'
       leaderboard.innerText = 'Loading'
 
-      leaderboardContainer.appendChild(leaderboard)
-      contentContainer.appendChild(leaderboardContainer)
+      contentContainer.appendChild(botPosition)
+      contentContainer.appendChild(leaderboard)
       box.appendChild(contentContainer)
 
       container.appendChild(box)
       document.body.appendChild(container)
 
       cached = cache[server] = {
-        leaderboard,
         canvas,
-        context
+        context,
+        botPosition,
+        leaderboard
       }
     }
 
@@ -102,9 +109,7 @@
           })
         }
 
-        cached.leaderboard.innerText = `${server}
-
-      Total players: ${totalPlayers}
+        cached.leaderboard.innerText = `Total players: ${totalPlayers}
       Total score: ${totalScore}
 
       #1 ${leaderboard[0].nickname} ${leaderboard[0].length}
@@ -132,6 +137,18 @@
           i++
           offset++
         }
+
+        break
+      }
+
+      case 2: {
+        let x = view.getUint16(offset)
+        offset += 2
+
+        let y = view.getUint16(offset)
+        offset += 2
+
+        cached.botPosition.innerText = `Bot's position: ${x}x${y}`
 
         break
       }
