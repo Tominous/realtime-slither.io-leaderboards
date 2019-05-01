@@ -8,9 +8,9 @@ let got = require('got')
  *  port: number
  */
 module.exports = async function getServers () {
-  let res = await got('http://slither.io/i33628.txt')
+  let response = await got('http://slither.io/i33628.txt')
   let servers = []
-  let dropped = res.body.split('').slice(1)
+  let dropped = response.body.split('').slice(1)
 
   let converted = dropped.map(function (c) {
     return c.charCodeAt(0) - 97

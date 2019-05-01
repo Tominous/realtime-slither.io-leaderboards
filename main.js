@@ -6,19 +6,32 @@ let path = require('path')
 let WebSocket = require('ws')
 let yargs = require('yargs')
 
-;(async function () {
-  let options = yargs
-    .option('nickname', {
-      nargs: 1,
-      demandOption: true,
-      string: true
-    }).option('skin', {
-      nargs: 1,
-      demandOption: true,
-      number: true
-    }).version(false)
-    .argv
+let options = yargs
+  .option('nickname', {
+    nargs: 1,
+    demandOption: true,
+    string: true
+  }).option('skin', {
+    nargs: 1,
+    demandOption: true,
+    string: true,
+    describe: 'Number or array of numbers separated by commas'
+  }).version(false)
+  .argv
 
+if (options.skin.includes(',')) {
+  options.skin = Buffer.from(options.skin.split(','))
+} else {
+  options.skin = Number(options.skin)
+
+  if (isNaN(options.skin)) {
+    console.error('Invalid skin')
+
+    process.exit(1)
+  }
+}
+
+;(async function () {
   let servers = await getServers()
   let application = express()
   let expressWsInstance = expressWs(application)
