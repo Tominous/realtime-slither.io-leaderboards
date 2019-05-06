@@ -1,5 +1,3 @@
-// This will make your snake follow the bot of the server you're in
-
 ;(function() {
   let textDecoder = new TextDecoder('utf-8')
 
