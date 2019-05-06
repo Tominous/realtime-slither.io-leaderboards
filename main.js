@@ -78,7 +78,6 @@ if (options.skin.includes(',')) {
         let serverString = `${ip}:${port}`
         let buffer = Buffer.alloc(6 + serverString.length)
 
-        // eslint-disable-next-line no-unused-vars
         let offset = buffer.writeUInt8(0, 0)
         offset = buffer.writeUInt8(serverString.length, offset)
         offset += buffer.write(serverString, offset)
@@ -122,7 +121,6 @@ if (options.skin.includes(',')) {
         let serverString = `${ip}:${port}`
         let buffer = Buffer.alloc(2 + serverString.length)
 
-        // eslint-disable-next-line no-unused-vars
         let offset = buffer.writeUInt8(1, 0)
         offset = buffer.writeUInt8(serverString.length, offset)
         offset += buffer.write(serverString, offset)
@@ -148,7 +146,6 @@ if (options.skin.includes(',')) {
           let serverString = `${ip}:${port}`
           let buffer = Buffer.alloc(8 + serverString.length)
 
-          // eslint-disable-next-line no-unused-vars
           let offset = buffer.writeUInt8(2, 0)
           offset = buffer.writeUInt8(serverString.length, offset)
           offset += buffer.write(serverString, offset)
