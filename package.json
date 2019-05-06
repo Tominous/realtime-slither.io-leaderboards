@@ -10,7 +10,7 @@
     "express": "4.16.4",
     "express-ws": "4.0.0",
     "got": "9.6.0",
-    "slitherode": "5.0.5",
+    "slitherode": "5.0.6",
     "yargs": "13.2.2"
   },
   "devDependencies": {
