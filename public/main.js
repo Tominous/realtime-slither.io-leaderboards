@@ -1,5 +1,3 @@
-/* eslint-env browser */
-
 ;(function() {
   let cache = {}
   let textDecoder = new TextDecoder('utf-8')
@@ -7,6 +5,7 @@
   let socket = new WebSocket(
     `${location.protocol.replace('http', 'ws')}//${location.host}/`
   )
+
   socket.binaryType = 'arraybuffer'
 
   socket.onmessage = function(event) {
