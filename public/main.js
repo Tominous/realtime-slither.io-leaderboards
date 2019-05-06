@@ -1,13 +1,15 @@
 /* eslint-env browser */
 
-(function () {
+;(function() {
   let cache = {}
   let textDecoder = new TextDecoder('utf-8')
 
-  let socket = new WebSocket(`${location.protocol.replace('http', 'ws')}//${location.host}/`)
+  let socket = new WebSocket(
+    `${location.protocol.replace('http', 'ws')}//${location.host}/`
+  )
   socket.binaryType = 'arraybuffer'
 
-  socket.onmessage = function (event) {
+  socket.onmessage = function(event) {
     let view = new DataView(event.data)
     let offset = 0
 
@@ -17,7 +19,9 @@
     let serverLength = view.getUint8(offset)
     offset++
 
-    let server = textDecoder.decode(event.data.slice(offset, offset + serverLength))
+    let server = textDecoder.decode(
+      event.data.slice(offset, offset + serverLength)
+    )
     offset += serverLength
 
     let cached = cache[server]
@@ -103,7 +107,9 @@
           let nicknameLength = view.getUint8(offset)
           offset++
 
-          let nickname = textDecoder.decode(event.data.slice(offset, offset + nicknameLength))
+          let nickname = textDecoder.decode(
+            event.data.slice(offset, offset + nicknameLength)
+          )
           offset += nicknameLength
 
           let length = (view.getUint16(offset) << 8) + view.getUint8(offset + 2)
@@ -136,12 +142,24 @@
       }
 
       case 1: {
-        cached.context.clearRect(0, 0, cached.canvas.width, cached.canvas.height)
+        cached.context.clearRect(
+          0,
+          0,
+          cached.canvas.width,
+          cached.canvas.height
+        )
 
         let i = 0
 
         while (offset < event.data.byteLength) {
-          if (view.getUint8(offset) === 1) { cached.context.fillRect((i % 80) + 80 - 80 + 12, (i / 80) + 80 - 80 + 12, 1, 1) }
+          if (view.getUint8(offset) === 1) {
+            cached.context.fillRect(
+              (i % 80) + 80 - 80 + 12,
+              i / 80 + 80 - 80 + 12,
+              1,
+              1
+            )
+          }
 
           i++
           offset++

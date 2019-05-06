@@ -1,8 +1,10 @@
 {
+  "main": "main.js",
   "scripts": {
-    "start": "node main --nickname rsl.glitch.me --skin 42",
-    "test": "standard",
-    "fix": "standard --fix"
+    "test": "npm run prettier:check",
+    "start": "node . --nickname rsl.glitch.me --skin 42",
+    "prettier:check": "prettier --check '**/*'",
+    "prettier:format": "prettier --write '**/*'"
   },
   "dependencies": {
     "express": "4.16.4",
@@ -12,6 +14,7 @@
     "yargs": "13.2.2"
   },
   "devDependencies": {
-    "standard": "12.0.1"
+    "husky": "2.2.0",
+    "prettier": "1.17.0"
   }
 }

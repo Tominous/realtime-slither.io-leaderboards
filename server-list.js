@@ -7,24 +7,24 @@ let got = require('got')
  *  ip: string
  *  port: number
  */
-module.exports = async function getServers () {
+module.exports = async function getServers() {
   let response = await got('http://slither.io/i33628.txt')
   let servers = []
   let dropped = response.body.split('').slice(1)
 
-  let converted = dropped.map(function (c) {
+  let converted = dropped.map(function(c) {
     return c.charCodeAt(0) - 97
   })
 
-  let substracted = converted.map(function (n, i) {
-    return n - (7 * i)
+  let substracted = converted.map(function(n, i) {
+    return n - 7 * i
   })
 
-  let moduloed = substracted.map(function (n) {
-    return (n % 26 + 26) % 26
+  let moduloed = substracted.map(function(n) {
+    return ((n % 26) + 26) % 26
   })
 
-  let bytes = moduloed.map(function (_n, i) {
+  let bytes = moduloed.map(function(_n, i) {
     return moduloed[i * 2] * 16 + moduloed[i * 2 + 1]
   })
 
