@@ -27,17 +27,23 @@
     let cached = cache[server]
 
     if (typeof cached === 'undefined') {
-      let box = document.createElement('div')
-      box.className = 'box'
+      let card = document.createElement('div')
+      card.className = 'mdc-card mdc-ripple-surface'
+
+      mdc.ripple.MDCRipple.attachTo(card)
+
+      let primaryAction = document.createElement('div')
+      primaryAction.className = 'mdc-card__primary-action'
 
       let media = document.createElement('div')
-      media.className = 'media'
+      media.className = 'mdc-card__media'
 
-      let figureContainer = document.createElement('div')
-      figureContainer.className = 'media-left'
+      let title = document.createElement('div')
+      title.className = 'mdc-card__media-content'
+      title.innerText = server
 
-      let figure = document.createElement('figure')
-      figure.className = 'image is-128x128'
+      media.appendChild(title)
+      media.appendChild(document.createElement('br'))
 
       let canvas = document.createElement('canvas')
       canvas.width = 104
@@ -50,36 +56,27 @@
 
       context.fillText('Loading', canvas.width / 2, canvas.height / 2)
 
-      figure.appendChild(canvas)
-      figureContainer.appendChild(figure)
+      media.appendChild(canvas)
 
-      media.appendChild(figureContainer)
-
-      let contentContainer = document.createElement('div')
-      contentContainer.className = 'media-content'
-
-      let serverBotPositionAndScore = document.createElement('div')
-      serverBotPositionAndScore.className = 'content'
-      serverBotPositionAndScore.innerText = `${server}
-      Loading`
+      let botPositionAndScore = document.createElement('div')
+      botPositionAndScore.innerText = 'Loading'
 
       let leaderboard = document.createElement('div')
-      leaderboard.className = 'content'
       leaderboard.innerText = 'Loading'
 
-      contentContainer.appendChild(serverBotPositionAndScore)
-      contentContainer.appendChild(leaderboard)
+      primaryAction.appendChild(media)
+      primaryAction.appendChild(botPositionAndScore)
+      primaryAction.appendChild(leaderboard)
 
-      media.appendChild(contentContainer)
+      card.appendChild(primaryAction)
 
-      box.appendChild(media)
-
-      document.body.appendChild(box)
+      document.body.appendChild(card)
+      document.body.appendChild(document.createElement('br'))
 
       cached = cache[server] = {
         canvas,
         context,
-        serverBotPositionAndScore,
+        botPositionAndScore,
         leaderboard
       }
     }
@@ -172,9 +169,7 @@
         let score = view.getUint16(offset)
         offset += 2
 
-        cached.serverBotPositionAndScore.innerText = `${server}
-
-        Bot's position: ${x}x${y}
+        cached.botPositionAndScore.innerText = `Bot's position: ${x}x${y}
         Bot's score: ${score}`
 
         break
