@@ -21,22 +21,20 @@
     let server = textDecoder.decode(
       event.data.slice(offset, offset + serverLength)
     )
+
     offset += serverLength
 
     let cached = cache[server]
 
     if (typeof cached === 'undefined') {
-      let container = document.createElement('div')
-      container.className = 'box'
-
       let box = document.createElement('div')
-      box.className = 'media'
-      box.style.display = 'inline-block'
+      box.className = 'box'
+
+      let media = document.createElement('div')
+      media.className = 'media'
 
       let figureContainer = document.createElement('div')
       figureContainer.className = 'media-left'
-      figureContainer.style.display = 'inline-block'
-      figureContainer.style.verticalAlign = 'top'
 
       let figure = document.createElement('figure')
       figure.className = 'image is-128x128'
@@ -44,8 +42,6 @@
       let canvas = document.createElement('canvas')
       canvas.width = 104
       canvas.height = 104
-      canvas.style.width = '104px'
-      canvas.style.height = '104px'
 
       let context = canvas.getContext('2d')
       context.fillStyle = 'rgba(255, 255, 255, 0.40)'
@@ -56,36 +52,34 @@
 
       figure.appendChild(canvas)
       figureContainer.appendChild(figure)
-      box.appendChild(figureContainer)
+
+      media.appendChild(figureContainer)
 
       let contentContainer = document.createElement('div')
       contentContainer.className = 'media-content'
-      contentContainer.style.display = 'inline-block'
 
-      let serverContent = document.createElement('div')
-      serverContent.className = 'content'
-      serverContent.innerText = server
-
-      let botPositionAndLength = document.createElement('div')
-      botPositionAndLength.className = 'content'
-      botPositionAndLength.innerText = 'Loading'
+      let serverBotPositionAndScore = document.createElement('div')
+      serverBotPositionAndScore.className = 'content'
+      serverBotPositionAndScore.innerText = `${server}
+      Loading`
 
       let leaderboard = document.createElement('div')
       leaderboard.className = 'content'
       leaderboard.innerText = 'Loading'
 
-      contentContainer.appendChild(serverContent)
-      contentContainer.appendChild(botPositionAndLength)
+      contentContainer.appendChild(serverBotPositionAndScore)
       contentContainer.appendChild(leaderboard)
-      box.appendChild(contentContainer)
 
-      container.appendChild(box)
-      document.body.appendChild(container)
+      media.appendChild(contentContainer)
+
+      box.appendChild(media)
+
+      document.body.appendChild(box)
 
       cached = cache[server] = {
         canvas,
         context,
-        botPositionAndLength,
+        serverBotPositionAndScore,
         leaderboard
       }
     }
@@ -109,6 +103,7 @@
           let nickname = textDecoder.decode(
             event.data.slice(offset, offset + nicknameLength)
           )
+
           offset += nicknameLength
 
           let length = (view.getUint16(offset) << 8) + view.getUint8(offset + 2)
@@ -174,11 +169,13 @@
         let y = view.getUint16(offset)
         offset += 2
 
-        let length = view.getUint16(offset)
+        let score = view.getUint16(offset)
         offset += 2
 
-        cached.botPositionAndLength.innerText = `Bot's position: ${x}x${y}
-        Bot's length: ${length}`
+        cached.serverBotPositionAndScore.innerText = `${server}
+
+        Bot's position: ${x}x${y}
+        Bot's score: ${score}`
 
         break
       }
