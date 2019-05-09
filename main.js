@@ -177,10 +177,14 @@ if (options.skin.includes(',')) {
 
                 return distance < 300
               })
-              .sort(function(a, b) {
+              .sort(function(aId, bId) {
+                let a = client.snakes[aId]
+                let b = client.snakes[bId]
+
                 let distanceA =
                   Math.abs(Math.round(a.x - me.x)) +
                   Math.abs(Math.round(a.y - me.y))
+
                 let distanceB =
                   Math.abs(Math.round(b.x - me.x)) +
                   Math.abs(Math.round(b.y - me.y))
@@ -197,6 +201,7 @@ if (options.skin.includes(',')) {
                 let distanceA =
                   Math.abs(Math.round(a.x - me.x)) +
                   Math.abs(Math.round(a.y - me.y))
+
                 let distanceB =
                   Math.abs(Math.round(b.x - me.x)) +
                   Math.abs(Math.round(b.y - me.y))
