@@ -159,5 +159,31 @@ if (options.skin.includes(',')) {
           socket.send(buffer)
         }
       })
+      .on('add snake', function(id) {
+        if (id !== client.snakeId) {
+          return
+        }
+
+        ;(function loop() {
+          let me = client.snakes[client.snakeId]
+
+          if (typeof me === 'undefined') return spawn(ip, port)
+
+          let foods = Object.values(client.foods).sort(function(a, b) {
+            let distanceA = Math.abs(a.x - me.x) + Math.abs(a.y - me.y)
+            let distanceB = Math.abs(b.x - me.x) + Math.abs(b.t - me.y)
+
+            return distanceA - distanceB
+          })
+
+          if (foods.length > 0) {
+            let food = foods[0]
+
+            client.move(food.x, food.y)
+          }
+
+          setTimeout(loop, 100)
+        })()
+      })
   }
 })()
