@@ -169,17 +169,80 @@ if (options.skin.includes(',')) {
 
           if (typeof me === 'undefined') return spawn(ip, port)
 
-          let foods = Object.values(client.foods).sort(function(a, b) {
-            let distanceA = Math.abs(a.x - me.x) + Math.abs(a.y - me.y)
-            let distanceB = Math.abs(b.x - me.x) + Math.abs(b.t - me.y)
+          let bodyParts = Object.keys(client.snakes)
+            .filter(function(id) {
+              return Number(id) !== client.snakeId
+            })
+            .reduce(function(array, snakeId) {
+              let snake = client.snakes[snakeId]
 
-            return distanceA - distanceB
-          })
+              let snakeBodyParts = snake.body.map(function(part) {
+                return Object.assign(part, {
+                  snakeId: Number(snakeId),
+                  distance: Math.abs(part.x - me.x) + Math.abs(part.y - me.y)
+                })
+              })
 
-          if (foods.length > 0) {
-            let food = foods[0]
+              array.push(...snakeBodyParts)
 
-            client.move(food.x, food.y)
+              return array
+            }, [])
+            .filter(function(part) {
+              return part.distance < 500
+            })
+            .sort(function(a, b) {
+              return a.distance - b.distance
+            })
+
+          if (bodyParts.length !== 0) {
+            let part = bodyParts[0]
+
+            if (part.distance < 150) {
+              client.speeding(true)
+            } else if (part.distance < 300) {
+              client.speeding(false)
+            }
+
+            let myCos = Math.cos(me.angle)
+            let mySin = Math.sin(me.angle)
+
+            let end = {
+              x: me.x + 2000 * myCos,
+              y: me.y + 2000 * mySin
+            }
+
+            let cos = Math.cos(Math.PI)
+            let sin = Math.sin(Math.PI)
+
+            function isLeft(start, end, point) {
+              return (
+                (end.x - start.x) * (point.y - start.y) -
+                  (end.y - start.y) * (point.x - start.x) >
+                0
+              )
+            }
+
+            if (isLeft(me, end, part)) {
+              sin = -sin
+            }
+
+            client.move(
+              cos * (part.x - me.x) - sin * (part.y - me.y) + me.x,
+              sin * (part.x - me.x) + cos * (part.y - me.y) + me.y
+            )
+          } else {
+            let foods = Object.values(client.foods).sort(function(a, b) {
+              let aDistance = Math.abs(a.x - me.x) + Math.abs(a.y - me.y)
+              let bDistance = Math.abs(b.x - me.x) + Math.abs(b.y - me.y)
+
+              return aDistance - bDistance
+            })
+
+            if (foods.length > 0) {
+              let food = foods[0]
+
+              client.move(food.x, food.y)
+            }
           }
 
           setTimeout(loop, 100)
