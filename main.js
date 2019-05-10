@@ -52,6 +52,7 @@ if (options.skin.includes(',')) {
     })
 
   let listener = application.listen(process.env.PORT || 3000)
+
   console.log(`Listening on *:${listener.address().port}`)
 
   for (let server of servers) {
@@ -82,7 +83,8 @@ if (options.skin.includes(',')) {
         offset = buffer.writeUInt8(serverString.length, offset)
         offset += buffer.write(serverString, offset)
         offset = buffer.writeUInt16BE(botRank, offset)
-        offset = buffer.writeUInt16BE(totalPlayers, offset)
+
+        buffer.writeUInt16BE(totalPlayers, offset)
 
         for (let index = 0; index < 10; index++) {
           let snake = leaderboard[index]
@@ -92,15 +94,13 @@ if (options.skin.includes(',')) {
             snake.nickname.length,
             0
           )
+
           snakeBufferOffset += snakeBuffer.write(
             snake.nickname,
             snakeBufferOffset
           )
-          snakeBufferOffset = snakeBuffer.writeUIntBE(
-            snake.length,
-            snakeBufferOffset,
-            3
-          )
+
+          snakeBuffer.writeUIntBE(snake.length, snakeBufferOffset, 3)
 
           buffer = Buffer.concat([buffer, snakeBuffer])
         }
@@ -123,7 +123,8 @@ if (options.skin.includes(',')) {
 
         let offset = buffer.writeUInt8(1, 0)
         offset = buffer.writeUInt8(serverString.length, offset)
-        offset += buffer.write(serverString, offset)
+
+        buffer.write(serverString, offset)
 
         buffer = Buffer.concat([buffer, Buffer.from(minimap)])
 
@@ -132,92 +133,30 @@ if (options.skin.includes(',')) {
         }
       })
       .on('move', function(id) {
-        if (id === client.snakeId) {
-          let connectedSockets = [...expressWsInstance.getWss().clients].filter(
-            function(socket) {
-              return socket.readyState === WebSocket.OPEN
-            }
-          )
+        if (id !== client.snakeId) return
 
-          if (connectedSockets.length === 0) return
-
-          let snake = client.snakes[id]
-
-          let serverString = `${ip}:${port}`
-          let buffer = Buffer.alloc(8 + serverString.length)
-
-          let offset = buffer.writeUInt8(2, 0)
-          offset = buffer.writeUInt8(serverString.length, offset)
-          offset += buffer.write(serverString, offset)
-          offset = buffer.writeUInt16BE(snake.x, offset)
-          offset = buffer.writeUInt16BE(snake.y, offset)
-          offset = buffer.writeUInt16BE(client.length(id), offset)
-
-          for (let socket of connectedSockets) {
-            socket.send(buffer)
+        let connectedSockets = [...expressWsInstance.getWss().clients].filter(
+          function(socket) {
+            return socket.readyState === WebSocket.OPEN
           }
-        }
-      })
-      .on('add snake', function(id) {
-        if (id === client.snakeId) {
-          ;(function loop() {
-            if (!client.connected || !client.snakes[client.snakeId])
-              return spawn(ip, port)
+        )
 
-            let me = client.snakes[client.snakeId]
+        if (connectedSockets.length === 0) return
 
-            let goAway = Object.keys(client.snakes)
-              .filter(function(id) {
-                if (Number(id) === client.snakeId) return false
+        let snake = client.snakes[id]
+        let serverString = `${ip}:${port}`
+        let buffer = Buffer.alloc(8 + serverString.length)
 
-                let other = client.snakes[id]
-                let distance =
-                  Math.abs(Math.round(other.x - me.x)) +
-                  Math.abs(Math.round(other.y - me.y))
+        let offset = buffer.writeUInt8(2, 0)
+        offset = buffer.writeUInt8(serverString.length, offset)
+        offset += buffer.write(serverString, offset)
+        offset = buffer.writeUInt16BE(snake.x, offset)
+        offset = buffer.writeUInt16BE(snake.y, offset)
 
-                return distance < 300
-              })
-              .sort(function(aId, bId) {
-                let a = client.snakes[aId]
-                let b = client.snakes[bId]
+        buffer.writeUInt16BE(client.length(id), offset)
 
-                let distanceA =
-                  Math.abs(Math.round(a.x - me.x)) +
-                  Math.abs(Math.round(a.y - me.y))
-
-                let distanceB =
-                  Math.abs(Math.round(b.x - me.x)) +
-                  Math.abs(Math.round(b.y - me.y))
-
-                return distanceA - distanceB
-              })
-
-            if (goAway.length !== 0) {
-              let snake = client.snakes[goAway[0]]
-
-              client.move(-snake.x, -snake.y)
-            } else {
-              let foods = Object.values(client.foods).sort(function(a, b) {
-                let distanceA =
-                  Math.abs(Math.round(a.x - me.x)) +
-                  Math.abs(Math.round(a.y - me.y))
-
-                let distanceB =
-                  Math.abs(Math.round(b.x - me.x)) +
-                  Math.abs(Math.round(b.y - me.y))
-
-                return distanceA - distanceB
-              })
-
-              if (foods.length > 0) {
-                let food = foods[0]
-
-                client.move(food.x, food.y)
-              }
-            }
-
-            setTimeout(loop, 100)
-          })()
+        for (let socket of connectedSockets) {
+          socket.send(buffer)
         }
       })
   }
