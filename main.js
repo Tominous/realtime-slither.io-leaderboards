@@ -66,6 +66,8 @@ if (options.skin.includes(',')) {
       options.skin
     )
 
+    client.speedingEnabled = false
+
     client
       .on('leaderboard', function(botRank, totalPlayers, leaderboard) {
         let connectedSockets = [...expressWsInstance.getWss().clients].filter(
@@ -199,20 +201,13 @@ if (options.skin.includes(',')) {
 
             if (part.distance < 150) {
               client.speeding(true)
-            } else if (part.distance < 300) {
+
+              client.speedingEnabled = true
+            } else if (client.speedingEnabled) {
               client.speeding(false)
+
+              client.speedingEnabled = false
             }
-
-            let myCos = Math.cos(me.angle)
-            let mySin = Math.sin(me.angle)
-
-            let end = {
-              x: me.x + 2000 * myCos,
-              y: me.y + 2000 * mySin
-            }
-
-            let cos = Math.cos(Math.PI)
-            let sin = Math.sin(Math.PI)
 
             function isLeft(start, end, point) {
               return (
@@ -220,6 +215,16 @@ if (options.skin.includes(',')) {
                   (end.y - start.y) * (point.x - start.x) >
                 0
               )
+            }
+
+            let cos = Math.cos(Math.PI)
+            let sin = Math.sin(Math.PI)
+            let myCos = Math.cos(me.angle)
+            let mySin = Math.sin(me.angle)
+
+            let end = {
+              x: me.x + 2000 * myCos,
+              y: me.y + 2000 * mySin
             }
 
             if (isLeft(me, end, part)) {
@@ -231,6 +236,12 @@ if (options.skin.includes(',')) {
               sin * (part.x - me.x) + cos * (part.y - me.y) + me.y
             )
           } else {
+            if (client.speedingEnabled) {
+              client.speeding(false)
+
+              client.speedingEnabled = false
+            }
+
             let foods = Object.values(client.foods).sort(function(a, b) {
               let aDistance = Math.abs(a.x - me.x) + Math.abs(a.y - me.y)
               let bDistance = Math.abs(b.x - me.x) + Math.abs(b.y - me.y)
