@@ -127,6 +127,11 @@ class Bot {
           self.client.skin
         )
 
+        self.client.on('leaderboard', this.handleLeaderboard.bind(this))
+        self.client.on('minimap', this.handleMinimap.bind(this))
+        self.client.on('move', this.handleMove.bind(this))
+        self.client.on('add snake', this.handleAddSnake.bind(this))
+
         return
       }
 
