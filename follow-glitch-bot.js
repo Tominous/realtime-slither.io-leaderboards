@@ -13,9 +13,10 @@
       let offset = 0
 
       let type = view.getUint8(offset)
-      offset++
 
       if (type !== 2) return
+
+      offset++
 
       let serverLength = view.getUint8(offset)
       offset++
@@ -37,9 +38,7 @@
       xm = x - snake.xx
       ym = y - snake.yy
 
-      let distanceX = Math.abs(Math.round(x - snake.xx))
-      let distanceY = Math.abs(Math.round(y - snake.yy))
-      let distance = distanceX + distanceY
+      let distance = Math.abs(xm | 0) + Math.abs(ym | 0)
 
       document.title = `Distance: ${distance}`
     }
