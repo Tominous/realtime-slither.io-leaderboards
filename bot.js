@@ -11,14 +11,34 @@ function isLeft(start, end, point) {
 
 class Bot {
   constructor(ip, port, nickname, skin, expressWsInstance) {
-    this.client = new Client(`ws://${ip}:${port}/slither`, nickname, skin)
-    this.speedingEnabled = false
     this.expressWsInstance = expressWsInstance
 
-    this.client.on('leaderboard', this.handleLeaderboard.bind(this))
-    this.client.on('minimap', this.handleMinimap.bind(this))
-    this.client.on('move', this.handleMove.bind(this))
-    this.client.on('add snake', this.handleAddSnake.bind(this))
+    this.spawn(`ws://${ip}:${port}/slither`, nickname, skin)
+  }
+
+  spawn(url, nickname, skin) {
+    this.speedingEnabled = false
+    this.client = new Client(url, nickname, skin)
+
+    this.client
+      .on('leaderboard', this.handleLeaderboard.bind(this))
+      .on('minimap', this.handleMinimap.bind(this))
+      .on('move', this.handleMove.bind(this))
+      .on('add snake', this.handleAddSnake.bind(this))
+  }
+
+  sortedFoodIds() {
+    let me = this.client.snakes[this.client.snakeId]
+    let self = this
+
+    return Object.keys(this.client.foods).sort(function(aId, bId) {
+      let a = self.client.foods[aId]
+      let b = self.client.foods[bId]
+      let aDistance = Math.abs(a.x - me.x) + Math.abs(a.y - me.y)
+      let bDistance = Math.abs(b.x - me.x) + Math.abs(b.y - me.y)
+
+      return aDistance - bDistance
+    })
   }
 
   handleLeaderboard(botRank, totalPlayers, leaderboard) {
@@ -121,16 +141,11 @@ class Bot {
       let me = self.client.snakes[self.client.snakeId]
 
       if (typeof me === 'undefined') {
-        self.client = new Client(
+        self.spawn(
           self.client.socket.url,
           self.client.nickname,
           self.client.skin
         )
-
-        self.client.on('leaderboard', this.handleLeaderboard.bind(this))
-        self.client.on('minimap', this.handleMinimap.bind(this))
-        self.client.on('move', this.handleMove.bind(this))
-        self.client.on('add snake', this.handleAddSnake.bind(this))
 
         return
       }
@@ -209,20 +224,6 @@ class Bot {
 
       setTimeout(loop, 100)
     })()
-  }
-
-  sortedFoodIds() {
-    let me = this.client.snakes[this.client.snakeId]
-    let self = this
-
-    return Object.keys(this.client.foods).sort(function(aId, bId) {
-      let a = self.client.foods[aId]
-      let b = self.client.foods[bId]
-      let aDistance = Math.abs(a.x - me.x) + Math.abs(a.y - me.y)
-      let bDistance = Math.abs(b.x - me.x) + Math.abs(b.y - me.y)
-
-      return aDistance - bDistance
-    })
   }
 }
 
