@@ -1,7 +1,9 @@
 let express = require('express')
 
-let router = express.Router()
+module.exports = function() {
+  let router = express.Router()
 
-router.ws('/', function() {})
+  router.ws('/', function() {})
 
-module.exports = router
+  return router
+}

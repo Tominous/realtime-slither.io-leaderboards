@@ -2,6 +2,8 @@ let express = require('express')
 let expressWs = require('express-ws')
 let getServers = require('slitherode/get-servers')
 let yargs = require('yargs')
+let frontend = require('./routes/frontend')
+let websocket = require('./routes/websocket')
 let Bot = require('./bot')
 
 let options = yargs
@@ -35,9 +37,7 @@ if (options.skin.includes(',')) {
   let application = express()
   let expressWsInstance = expressWs(application)
 
-  application
-    .use(require('./routes/frontend'))
-    .use(require('./routes/websocket'))
+  application.use(frontend()).use(websocket())
 
   let listener = await application.listen(process.env.PORT || 3000)
 
