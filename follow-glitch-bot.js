@@ -1,6 +1,4 @@
 ;(function() {
-  let textDecoder = new TextDecoder('utf-8')
-
   ;(function connectToBot() {
     let socket = new WebSocket('ws://rsl.glitch.me')
 
@@ -21,9 +19,9 @@
       let serverLength = view.getUint8(offset)
       offset++
 
-      let server = textDecoder.decode(
-        event.data.slice(offset, offset + serverLength)
-      )
+      let server = Array.from(new Uint8Array(event.data.slice(offset, offset + serverLength))).map(function(code) {
+        return String.fromCharCode(code)
+      }).join('')
 
       if (server !== `${bso.ip}:${bso.po}`) return
 

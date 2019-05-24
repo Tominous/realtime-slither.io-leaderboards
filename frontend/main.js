@@ -1,6 +1,5 @@
 ;(function() {
   let cache = {}
-  let textDecoder = new TextDecoder('utf-8')
 
   let socket = new WebSocket(
     `${location.protocol.replace('http', 'ws')}//${location.host}/`
@@ -18,9 +17,9 @@
     let serverLength = view.getUint8(offset)
     offset++
 
-    let server = textDecoder.decode(
-      event.data.slice(offset, offset + serverLength)
-    )
+    let server = Array.from(new Uint8Array(event.data.slice(offset, offset + serverLength))).map(function(code) {
+      return String.fromCharCode(code)
+    }).join('')
 
     offset += serverLength
 
@@ -97,9 +96,9 @@
           let nicknameLength = view.getUint8(offset)
           offset++
 
-          let nickname = textDecoder.decode(
-            event.data.slice(offset, offset + nicknameLength)
-          )
+          let nickname = Array.from(new Uint8Array(event.data.slice(offset, offset + nicknameLength))).map(function(code) {
+      return String.fromCharCode(code)
+    }).join('')
 
           offset += nicknameLength
 
