@@ -115,7 +115,7 @@ class Bot {
 
     let snake = this.client.snakes[id]
     let server = /ws:\/\/(.*)\/slither/.exec(this.client.socket.url)[1]
-    let buffer = Buffer.alloc(8 + server.length)
+    let buffer = Buffer.alloc(9 + server.length)
 
     let offset = buffer.writeUInt8(2, 0)
     offset = buffer.writeUInt8(server.length, offset)
