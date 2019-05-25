@@ -123,7 +123,7 @@ class Bot {
     offset = buffer.writeUInt16BE(snake.x, offset)
     offset = buffer.writeUInt16BE(snake.y, offset)
 
-    buffer.writeUInt16BE(this.client.length(id), offset)
+    buffer.writeUIntBE(this.client.length(id), offset, 3)
 
     for (let socket of connectedSockets) {
       socket.send(buffer)
@@ -190,12 +190,12 @@ class Bot {
 
         let cos = Math.cos(Math.PI)
         let sin = Math.sin(Math.PI)
-        let myCos = Math.cos(me.angle)
-        let mySin = Math.sin(me.angle)
+        let angleCos = Math.cos(me.angle)
+        let angleSin = Math.sin(me.angle)
 
         let end = {
-          x: me.x + 2000 * myCos,
-          y: me.y + 2000 * mySin
+          x: me.x + 2000 * angleCos,
+          y: me.y + 2000 * angleSin
         }
 
         if (isLeft(me, end, part)) {

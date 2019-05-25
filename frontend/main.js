@@ -165,8 +165,7 @@
         let y = view.getUint16(offset)
         offset += 2
 
-        let score = view.getUint16(offset)
-        offset += 2
+        let score = (view.getUint16(offset) << 8) + view.getUint8(offset + 2)
 
         cached.botPositionAndScore.innerText = `Bot's position: ${x}x${y}
         Bot's score: ${score}`
