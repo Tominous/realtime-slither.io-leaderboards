@@ -6,7 +6,7 @@
 Realtime slither.io leaderboards
 
 ## APIs
- 
+
 ### WebSocket
 
 #### /
@@ -16,16 +16,15 @@ Realtime slither.io leaderboards
 All start with:
 
 | Type          | Description   |
-|---------------|---------------|
+| ------------- | ------------- |
 | Unsigned byte | Type          |
 | Unsigned byte | Server length |
 | String        | Server        |
 
-
 ###### Type 0: leaderboard
 
 | Type                    | Description   |
-|-------------------------|---------------|
+| ----------------------- | ------------- |
 | Unsigned 16-bit integer | Bot's rank    |
 | Unsigned 16-bit integer | Total players |
 | Array of 10 snakes      | Snakes        |
@@ -33,21 +32,21 @@ All start with:
 Snake:
 
 | Type                    | Description     |
-|-------------------------|-----------------|
+| ----------------------- | --------------- |
 | Unsigned byte           | Nickname length |
 | String                  | Nickname        |
 | Unsigned 24-bit integer | Length          |
 
 ###### Type 1: minimap
 
-| Type          | Description |
-|---------------|-------------|
-| 80 * 80 array | Minimap     |
+| Type           | Description |
+| -------------- | ----------- |
+| 80 \* 80 array | Minimap     |
 
 ###### Type 2: bot moved
 
 | Type                    | Description |
-|-------------------------|-------------|
+| ----------------------- | ----------- |
 | Unsigned 16-bit integer | X           |
 | Unsigned 16-bit integer | Y           |
 | Unsigned 24-bit integer | Length      |
