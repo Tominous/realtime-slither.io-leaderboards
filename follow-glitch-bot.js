@@ -19,9 +19,9 @@
       let serverLength = view.getUint8(offset)
       offset++
 
-      let server = Array.from(new Uint8Array(event.data.slice(offset, offset + serverLength))).map(function(code) {
-        return String.fromCharCode(code)
-      }).join('')
+      let server = String.fromCharCode(
+        ...new Uint8Array(event.data.slice(offset, offset + serverLength))
+      )
 
       if (server !== `${bso.ip}:${bso.po}`) return
 

@@ -17,9 +17,9 @@
     let serverLength = view.getUint8(offset)
     offset++
 
-    let server = Array.from(new Uint8Array(event.data.slice(offset, offset + serverLength))).map(function(code) {
-      return String.fromCharCode(code)
-    }).join('')
+    let server = String.fromCharCode(
+      ...new Uint8Array(event.data.slice(offset, offset + serverLength))
+    )
 
     offset += serverLength
 
@@ -96,9 +96,9 @@
           let nicknameLength = view.getUint8(offset)
           offset++
 
-          let nickname = Array.from(new Uint8Array(event.data.slice(offset, offset + nicknameLength))).map(function(code) {
-      return String.fromCharCode(code)
-    }).join('')
+          let nickname = String.fromCharCode(
+            ...new Uint8Array(event.data.slice(offset, offset + nicknameLength))
+          )
 
           offset += nicknameLength
 
