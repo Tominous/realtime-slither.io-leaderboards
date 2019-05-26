@@ -24,7 +24,17 @@ class Bot {
       .on('leaderboard', this.handleLeaderboard.bind(this))
       .on('minimap', this.handleMinimap.bind(this))
       .on('move', this.handleMove.bind(this))
-      .on('add snake', this.handleAddSnake.bind(this))
+      .on('dead', this.handleDead.bind(this))
+
+    this.client.socket.on(
+      'close',
+      this.spawn.bind(
+        this,
+        this.client.socket.url,
+        this.client.nickname,
+        this.client.skin
+      )
+    )
   }
 
   sortedFoodIds() {
@@ -128,102 +138,85 @@ class Bot {
     for (let socket of connectedSockets) {
       socket.send(buffer)
     }
-  }
-
-  handleAddSnake(id) {
-    if (id !== this.client.snakeId) {
-      return
-    }
 
     let self = this
+    let me = this.client.snakes[this.client.snakeId]
 
-    ;(function loop() {
-      let me = self.client.snakes[self.client.snakeId]
+    let parts = Object.keys(this.client.snakes)
+      .filter(function(id) {
+        return Number(id) !== self.client.snakeId
+      })
+      .reduce(function(array, snakeId) {
+        let snake = self.client.snakes[snakeId]
 
-      if (typeof me === 'undefined') {
-        self.spawn(
-          self.client.socket.url,
-          self.client.nickname,
-          self.client.skin
-        )
-
-        return
-      }
-
-      let parts = Object.keys(self.client.snakes)
-        .filter(function(id) {
-          return Number(id) !== self.client.snakeId
-        })
-        .reduce(function(array, snakeId) {
-          let snake = self.client.snakes[snakeId]
-
-          let parts = snake.body.map(function(part) {
-            return Object.assign(part, {
-              snakeId: Number(snakeId),
-              distance: Math.abs(part.x - me.x) + Math.abs(part.y - me.y)
-            })
+        let parts = snake.body.map(function(part) {
+          return Object.assign(part, {
+            snakeId: Number(snakeId),
+            distance: Math.abs(part.x - me.x) + Math.abs(part.y - me.y)
           })
-
-          array.push(...parts)
-
-          return array
-        }, [])
-        .filter(function(part) {
-          return part.distance < 500
-        })
-        .sort(function(a, b) {
-          return a.distance - b.distance
         })
 
-      if (parts.length !== 0) {
-        let part = parts[0]
+        array.push(...parts)
 
-        if (part.distance < 150) {
-          self.client.speeding(true)
+        return array
+      }, [])
+      .filter(function(part) {
+        return part.distance < 500
+      })
+      .sort(function(a, b) {
+        return a.distance - b.distance
+      })
 
-          self.client.speedingEnabled = true
-        } else if (self.client.speedingEnabled) {
-          self.client.speeding(false)
+    if (parts.length !== 0) {
+      let part = parts[0]
 
-          self.client.speedingEnabled = false
-        }
+      if (part.distance < 150) {
+        this.client.speeding(true)
 
-        let cos = Math.cos(Math.PI)
-        let sin = Math.sin(Math.PI)
-        let angleCos = Math.cos(me.angle)
-        let angleSin = Math.sin(me.angle)
+        this.client.speedingEnabled = true
+      } else if (this.client.speedingEnabled) {
+        this.client.speeding(false)
 
-        let end = {
-          x: me.x + 2000 * angleCos,
-          y: me.y + 2000 * angleSin
-        }
-
-        if (isLeft(me, end, part)) {
-          sin = -sin
-        }
-
-        self.client.move(
-          cos * (part.x - me.x) - sin * (part.y - me.y) + me.x,
-          sin * (part.x - me.x) + cos * (part.y - me.y) + me.y
-        )
-      } else {
-        if (self.client.speedingEnabled) {
-          self.client.speeding(false)
-
-          self.client.speedingEnabled = false
-        }
-
-        let foodIds = self.sortedFoodIds()
-
-        if (foodIds.length > 0) {
-          let food = self.client.foods[foodIds[0]]
-
-          self.client.move(food.x, food.y)
-        }
+        this.client.speedingEnabled = false
       }
 
-      setTimeout(loop, 100)
-    })()
+      let cos = Math.cos(Math.PI)
+      let sin = Math.sin(Math.PI)
+      let angleCos = Math.cos(me.angle)
+      let angleSin = Math.sin(me.angle)
+
+      let end = {
+        x: me.x + 2000 * angleCos,
+        y: me.y + 2000 * angleSin
+      }
+
+      if (isLeft(me, end, part)) {
+        sin = -sin
+      }
+
+      this.client.move(
+        cos * (part.x - me.x) - sin * (part.y - me.y) + me.x,
+        sin * (part.x - me.x) + cos * (part.y - me.y) + me.y
+      )
+    } else {
+      if (this.client.speedingEnabled) {
+        this.client.speeding(false)
+
+        this.client.speedingEnabled = false
+      }
+
+      let foodIds = this.sortedFoodIds()
+
+      if (foodIds.length > 0) {
+        let food = this.client.foods[foodIds[0]]
+
+        this.client.move(food.x, food.y)
+      }
+    }
+  }
+
+  handleDead(notClosed) {
+    if (notClosed) this.client.socket.close()
   }
 }
 
