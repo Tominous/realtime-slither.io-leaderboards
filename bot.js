@@ -16,7 +16,7 @@ class Bot {
     this.bound = {
       spawn: this.spawn.bind(this, `ws://${ip}:${port}/slither`, nickname, skin),
       events: {
-        leaderboard: this.handleLeaderboards.bind(this),
+        leaderboard: this.handleLeaderboard.bind(this),
         minimap: this.handleMinimap.bind(this),
         move: this.handleMove.bind(this),
         dead: this.handleDead.bind(this)
