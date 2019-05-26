@@ -14,7 +14,12 @@ class Bot {
     this.expressWsInstance = expressWsInstance
 
     this.bound = {
-      spawn: this.spawn.bind(this, `ws://${ip}:${port}/slither`, nickname, skin),
+      spawn: this.spawn.bind(
+        this,
+        `ws://${ip}:${port}/slither`,
+        nickname,
+        skin
+      ),
       events: {
         leaderboard: this.handleLeaderboard.bind(this),
         minimap: this.handleMinimap.bind(this),
@@ -140,7 +145,6 @@ class Bot {
     for (let socket of connectedSockets) {
       socket.send(buffer)
     }
-
   }
 
   handleDead(notClosed) {
