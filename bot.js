@@ -145,6 +145,8 @@ class Bot {
     for (let socket of connectedSockets) {
       socket.send(buffer)
     }
+
+    this.run()
   }
 
   handleDead(notClosed) {
