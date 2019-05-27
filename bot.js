@@ -12,7 +12,6 @@ function isLeft(start, end, point) {
 class Bot {
   constructor(server, options, expressWsInstance) {
     this.expressWsInstance = expressWsInstance
-    this.speedingEnabled = false
 
     this.client = new Client(`ws://${server.ip}:${server.port}/slither`, options.nickname, options.skin)
       .on('leaderboard', this.handleLeaderboard.bind(this))
