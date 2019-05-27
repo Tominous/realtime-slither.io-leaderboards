@@ -44,12 +44,14 @@ if (options.skin.includes(',')) {
   console.log(`Listening on *:${listener.address().port}`)
 
   for (let server of servers) {
-    new Bot(
-      server.ip,
-      server.port,
-      options.nickname,
-      options.skin,
-      expressWsInstance
-    )
+    ;(function spawn() {
+      let bot = new Bot(
+        server,
+        options,
+        expressWsInstance
+      )
+      
+      bot.client.socket.on('close', spawn) // memory leak
+    })()
   }
 })()
