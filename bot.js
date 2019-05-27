@@ -20,11 +20,11 @@ class Bot {
     this.speedingEnabled = false
     this.client = new Client(url, nickname, skin)
 
-/*    this.client
-      .on('leaderboard', this.handleLeaderboard.bind(this))
-      .on('minimap', this.handleMinimap.bind(this))
-      .on('move', this.handleMove.bind(this))
-      .on('dead', this.handleDead.bind(this))
+    this.client
+      //.on('leaderboard', this.handleLeaderboard.bind(this))
+      //.on('minimap', this.handleMinimap.bind(this))
+      //.on('move', this.handleMove.bind(this))
+      //.on('dead', this.handleDead.bind(this))
 
     this.client.socket.on(
       'close',
@@ -34,7 +34,7 @@ class Bot {
         this.client.nickname,
         this.client.skin
       )
-    ).on('error', function() {})*/
+    ).on('error', function() {})
   }
 
   sortedFoodIds() {
