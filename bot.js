@@ -1,40 +1,21 @@
 let Client = require('slitherode')
 let WebSocket = require('ws')
 
-function isLeft(start, end, point) {
-  return (
-    (end.x - start.x) * (point.y - start.y) -
-      (end.y - start.y) * (point.x - start.x) >
-    0
-  )
-}
-
 class Bot {
   constructor(server, options, expressWsInstance) {
     this.expressWsInstance = expressWsInstance
 
-    this.client = new Client(`ws://${server.ip}:${server.port}/slither`, options.nickname, options.skin)
+    this.client = new Client(
+      `ws://${server.ip}:${server.port}/slither`,
+      options.nickname,
+      options.skin
+    )
       .on('leaderboard', this.handleLeaderboard.bind(this))
       .on('minimap', this.handleMinimap.bind(this))
       .on('move', this.handleMove.bind(this))
       .on('dead', this.handleDead.bind(this))
 
-    this.client.socket
-      .on('error', function() {})
-  }
-
-  sortedFoodIds() {
-    let me = this.client.snakes[this.client.snakeId]
-    let self = this
-
-    return Object.keys(this.client.foods).sort(function(aId, bId) {
-      let a = self.client.foods[aId]
-      let b = self.client.foods[bId]
-      let aDistance = Math.abs(a.x - me.x) + Math.abs(a.y - me.y)
-      let bDistance = Math.abs(b.x - me.x) + Math.abs(b.y - me.y)
-
-      return aDistance - bDistance
-    })
+    this.client.socket.on('error', function() {})
   }
 
   handleLeaderboard(botRank, totalPlayers, leaderboard) {
@@ -101,44 +82,12 @@ class Bot {
   handleMove(id) {
     if (id !== this.client.snakeId) return
 
-    this.run()
-
-    let connectedSockets = [...this.expressWsInstance.getWss().clients].filter(
-      function(socket) {
-        return socket.readyState === WebSocket.OPEN
-      }
-    )
-
-    if (connectedSockets.length === 0) return
-
-    let snake = this.client.snakes[id]
-    let server = /ws:\/\/(.*)\/slither/.exec(this.client.socket.url)[1]
-    let buffer = Buffer.alloc(9 + server.length)
-
-    let offset = buffer.writeUInt8(2, 0)
-    offset = buffer.writeUInt8(server.length, offset)
-    offset += buffer.write(server, offset)
-    offset = buffer.writeUInt16BE(snake.x, offset)
-    offset = buffer.writeUInt16BE(snake.y, offset)
-
-    buffer.writeUIntBE(this.client.length(id), offset, 3)
-
-    for (let socket of connectedSockets) {
-      socket.send(buffer)
-    }
-  }
-
-  handleDead(notClosed) {
-    if (notClosed) this.client.socket.close()
-  }
-
-  run() {
+    let me = this.client.snakes[id]
     let self = this
-    let me = this.client.snakes[this.client.snakeId]
 
     let parts = Object.keys(this.client.snakes)
-      .filter(function(id) {
-        return Number(id) !== self.client.snakeId
+      .filter(function(snakeId) {
+        return Number(snakeId) !== id
       })
       .reduce(function(array, snakeId) {
         let snake = self.client.snakes[snakeId]
@@ -184,7 +133,11 @@ class Bot {
         y: me.y + 2000 * angleSin
       }
 
-      if (isLeft(me, end, part)) {
+      if ((
+    (end.x - me.x) * (part.y - me.y) -
+      (end.y - me.y) * (part.x - me.x) >
+    0
+  )) {
         sin = -sin
       }
 
@@ -199,7 +152,14 @@ class Bot {
         this.client.speedingEnabled = false
       }
 
-      let foodIds = this.sortedFoodIds()
+      let foodIds = Object.keys(this.client.foods).sort(function(aId, bId) {
+        let a = self.client.foods[aId]
+        let b = self.client.foods[bId]
+        let aDistance = Math.abs(a.x - me.x) + Math.abs(a.y - me.y)
+        let bDistance = Math.abs(b.x - me.x) + Math.abs(b.y - me.y)
+
+        return aDistance - bDistance
+      })
 
       if (foodIds.length > 0) {
         let food = this.client.foods[foodIds[0]]
@@ -207,6 +167,33 @@ class Bot {
         this.client.move(food.x, food.y)
       }
     }
+
+    let connectedSockets = [...this.expressWsInstance.getWss().clients].filter(
+      function(socket) {
+        return socket.readyState === WebSocket.OPEN
+      }
+    )
+
+    if (connectedSockets.length === 0) return
+
+    let server = /ws:\/\/(.*)\/slither/.exec(this.client.socket.url)[1]
+    let buffer = Buffer.alloc(9 + server.length)
+
+    let offset = buffer.writeUInt8(2, 0)
+    offset = buffer.writeUInt8(server.length, offset)
+    offset += buffer.write(server, offset)
+    offset = buffer.writeUInt16BE(me.x, offset)
+    offset = buffer.writeUInt16BE(me.y, offset)
+
+    buffer.writeUIntBE(this.client.length(id), offset, 3)
+
+    for (let socket of connectedSockets) {
+      socket.send(buffer)
+    }
+  }
+
+  handleDead(notClosed) {
+    if (notClosed) this.client.socket.close()
   }
 }
 
