@@ -26,7 +26,7 @@ class Bot {
       .on('move', this.handleMove.bind(this))
       .on('dead', this.handleDead.bind(this))
 
-    /*this.client.socket.on(
+    this.client.socket.on(
       'close',
       this.spawn.bind(
         this,
@@ -34,7 +34,7 @@ class Bot {
         this.client.nickname,
         this.client.skin
       )
-    ).on('error', function() {})*/
+    ).on('error', function() {})
   }
 
   sortedFoodIds() {
