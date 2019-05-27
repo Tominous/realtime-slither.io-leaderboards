@@ -13,28 +13,33 @@ class Bot {
   constructor(ip, port, nickname, skin, expressWsInstance) {
     this.expressWsInstance = expressWsInstance
 
-    this.spawn(`ws://${ip}:${port}/slither`, nickname, skin)
+    this.bound = {
+      spawn: this.spawn.bind(
+        this,
+        `ws://${ip}:${port}/slither`,
+        nickname,
+        skin
+      ),
+      events: {
+        leaderboard: this.handleLeaderboard.bind(this),
+        minimap: this.handleMinimap.bind(this),
+        move: this.handleMove.bind(this),
+        dead: this.handleDead.bind(this)
+      }
+    }
+
+    this.bound.spawn()
   }
 
   spawn(url, nickname, skin) {
     this.speedingEnabled = false
     this.client = new Client(url, nickname, skin)
 
-    this.client
-      //.on('leaderboard', this.handleLeaderboard.bind(this))
-      //.on('minimap', this.handleMinimap.bind(this))
-      //.on('move', this.handleMove.bind(this))
-      //.on('dead', this.handleDead.bind(this))
+    for (let event in this.bound.events) {
+      this.client.on(event, this.bound.events[event])
+    }
 
-    this.client.socket.on(
-      'close',
-      this.spawn.bind(
-        this,
-        this.client.socket.url,
-        this.client.nickname,
-        this.client.skin
-      )
-    ).on('error', function() {})
+    this.client.socket.on('close', this.bound.spawn).on('error', empty)
   }
 
   sortedFoodIds() {
@@ -139,6 +144,14 @@ class Bot {
       socket.send(buffer)
     }
 
+    this.run()
+  }
+
+  handleDead(notClosed) {
+    if (notClosed) this.client.socket.close()
+  }
+
+  run() {
     let self = this
     let me = this.client.snakes[this.client.snakeId]
 
@@ -213,10 +226,6 @@ class Bot {
         this.client.move(food.x, food.y)
       }
     }
-  }
-
-  handleDead(notClosed) {
-    if (notClosed) this.client.socket.close()
   }
 }
 
