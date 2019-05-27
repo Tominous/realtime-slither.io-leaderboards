@@ -76,8 +76,6 @@ class Bot {
   }
 
   handleMinimap(minimap) {
-    this.run()
-
     let connectedSockets = [...this.expressWsInstance.getWss().clients].filter(
       function(socket) {
         return socket.readyState === WebSocket.OPEN
@@ -103,6 +101,8 @@ class Bot {
 
   handleMove(id) {
     if (id !== this.client.snakeId) return
+
+    this.run()
 
     let connectedSockets = [...this.expressWsInstance.getWss().clients].filter(
       function(socket) {
