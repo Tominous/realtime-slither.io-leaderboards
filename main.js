@@ -45,12 +45,8 @@ if (options.skin.includes(',')) {
 
   for (let server of servers) {
     ;(function spawn() {
-      let bot = new Bot(
-        server,
-        options,
-        expressWsInstance
-      )
-      
+      let bot = new Bot(server, options, expressWsInstance)
+
       bot.client.socket.on('close', spawn)
     })()
   }
