@@ -1,6 +1,8 @@
 let Client = require('slitherode')
 let WebSocket = require('ws')
 
+function empty() {}
+
 function isLeft(start, end, point) {
   return (
     (end.x - start.x) * (point.y - start.y) -
@@ -39,7 +41,7 @@ class Bot {
       this.client.on(event, this.bound.events[event])
     }
 
-    this.client.socket.on('close', this.bound.spawn).on('error', function() {})
+    this.client.socket.on('close', this.bound.spawn).on('error', empty)
   }
 
   sortedFoodIds() {
