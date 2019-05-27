@@ -20,7 +20,7 @@ class Bot {
     this.speedingEnabled = false
     this.client = new Client(url, nickname, skin)
 
-    this.client
+/*    this.client
       .on('leaderboard', this.handleLeaderboard.bind(this))
       .on('minimap', this.handleMinimap.bind(this))
       .on('move', this.handleMove.bind(this))
@@ -34,7 +34,7 @@ class Bot {
         this.client.nickname,
         this.client.skin
       )
-    ).on('error', function() {})
+    ).on('error', function() {})*/
   }
 
   sortedFoodIds() {
