@@ -9,40 +9,32 @@ function isLeft(start, end, point) {
   )
 }
 
-function empty() {}
-
 class Bot {
   constructor(ip, port, nickname, skin, expressWsInstance) {
     this.expressWsInstance = expressWsInstance
 
-    this.bound = {
-      spawn: this.spawn.bind(
-        this,
-        `ws://${ip}:${port}/slither`,
-        nickname,
-        skin
-      ),
-      events: {
-        leaderboard: this.handleLeaderboard.bind(this),
-        minimap: this.handleMinimap.bind(this),
-        move: this.handleMove.bind(this),
-        dead: this.handleDead.bind(this)
-      }
-    }
-
-    this.bound.spawn()
+    this.spawn(`ws://${ip}:${port}/slither`, nickname, skin)
   }
 
   spawn(url, nickname, skin) {
     this.speedingEnabled = false
     this.client = new Client(url, nickname, skin)
 
-    for (let event in this.bound.events) {
-      this.client.on(event, this.bound.events[event])
-    }
+    this.client
+      .on('leaderboard', this.handleLeaderboard.bind(this))
+      .on('minimap', this.handleMinimap.bind(this))
+      .on('move', this.handleMove.bind(this))
+      .on('dead', this.handleDead.bind(this))
 
-    //this.client.socket.on('close', this.bound.spawn)
-    this.client.socket.on('error', empty)
+    /*this.client.socket.on(
+      'close',
+      this.spawn.bind(
+        this,
+        url,
+        this.client.nickname,
+        this.client.skin
+      )
+    ).on('error', function() {})*/
   }
 
   sortedFoodIds() {
