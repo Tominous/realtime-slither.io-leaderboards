@@ -10,30 +10,17 @@ function isLeft(start, end, point) {
 }
 
 class Bot {
-  constructor(ip, port, nickname, skin, expressWsInstance) {
+  constructor(server, options, expressWsInstance) {
     this.expressWsInstance = expressWsInstance
-
-    this.client = {
-      socket: {
-        url: `ws://${ip}:${port}/slither`
-      },
-      nickname,skin
-    }
-
-    this.spawn()
-  }
-
-  spawn() {
     this.speedingEnabled = false
 
-    this.client = new Client(this.client.socket.url, this.client.nickname, this.client.skin)
+    this.client = new Client(`ws://${server.ip}:${server.port}/slither`, options.nickname, options.skin)
       .on('leaderboard', this.handleLeaderboard.bind(this))
       .on('minimap', this.handleMinimap.bind(this))
       .on('move', this.handleMove.bind(this))
       .on('dead', this.handleDead.bind(this))
 
     this.client.socket
-      .on('close', this.spawn.bind(this))
       .on('error', function() {})
   }
 
