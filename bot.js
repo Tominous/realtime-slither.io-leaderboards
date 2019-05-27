@@ -13,27 +13,26 @@ class Bot {
   constructor(ip, port, nickname, skin, expressWsInstance) {
     this.expressWsInstance = expressWsInstance
 
-    this.spawn(`ws://${ip}:${port}/slither`, nickname, skin)
+    this.client = {
+      socket: {
+        url: `ws://${ip}:${port}/slither`
+      },
+      nickname,skin
+    }
+
+    this.spawn()
   }
 
-  spawn(url, nickname, skin) {    
+  spawn() {
     this.speedingEnabled = false
 
-    this.client = new Client(url, nickname, skin)
+    this.client = new Client(this.client.socket.url, this.client.nickname, this.client.skin)
       .on('leaderboard', this.handleLeaderboard.bind(this))
       .on('minimap', this.handleMinimap.bind(this))
       .on('move', this.handleMove.bind(this))
       .on('dead', this.handleDead.bind(this))
 
-    this.client.socket.on(
-      'close',
-      this.spawn.bind(
-        this,
-        url,
-        nickname,
-        skin
-      )
-    ).on('error', function() {})
+    this.client.socket.on('close', this.spawn.bind(this)).on('error', function() {})
   }
 
   sortedFoodIds() {
