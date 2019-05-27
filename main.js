@@ -51,7 +51,7 @@ if (options.skin.includes(',')) {
         expressWsInstance
       )
       
-      bot.client.socket.on('close', spawn) // memory leak
+      bot.client.socket.on('close', spawn)
     })()
   }
 })()
