@@ -76,6 +76,8 @@ class Bot {
   }
 
   handleMinimap(minimap) {
+    this.run()
+
     let connectedSockets = [...this.expressWsInstance.getWss().clients].filter(
       function(socket) {
         return socket.readyState === WebSocket.OPEN
@@ -108,6 +110,8 @@ class Bot {
       }
     )
 
+    if (connectedSockets.length === 0) return
+
     let snake = this.client.snakes[id]
     let server = /ws:\/\/(.*)\/slither/.exec(this.client.socket.url)[1]
     let buffer = Buffer.alloc(9 + server.length)
@@ -123,8 +127,6 @@ class Bot {
     for (let socket of connectedSockets) {
       socket.send(buffer)
     }
-
-    this.run()
   }
 
   handleDead(notClosed) {
