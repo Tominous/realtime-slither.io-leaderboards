@@ -108,8 +108,6 @@ class Bot {
       }
     )
 
-    if (connectedSockets.length === 0) return
-
     let snake = this.client.snakes[id]
     let server = /ws:\/\/(.*)\/slither/.exec(this.client.socket.url)[1]
     let buffer = Buffer.alloc(9 + server.length)
