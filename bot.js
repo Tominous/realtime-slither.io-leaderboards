@@ -9,6 +9,8 @@ function isLeft(start, end, point) {
   )
 }
 
+function empty() {}
+
 class Bot {
   constructor(ip, port, nickname, skin, expressWsInstance) {
     this.expressWsInstance = expressWsInstance
