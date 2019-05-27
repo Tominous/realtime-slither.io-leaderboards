@@ -37,7 +37,7 @@ if (options.skin.includes(',')) {
   let application = express()
   let expressWsInstance = expressWs(application)
 
-  application.use(frontend()).use(websocket())
+  application.use(frontend(), websocket())
 
   let listener = await application.listen(process.env.PORT || 3000)
 
