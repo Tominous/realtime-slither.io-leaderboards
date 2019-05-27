@@ -16,11 +16,10 @@ class Bot {
     this.spawn(`ws://${ip}:${port}/slither`, nickname, skin)
   }
 
-  spawn(url, nickname, skin) {
+  spawn(url, nickname, skin) {    
     this.speedingEnabled = false
-    this.client = new Client(url, nickname, skin)
 
-    this.client
+    this.client = new Client(url, nickname, skin)
       .on('leaderboard', this.handleLeaderboard.bind(this))
       .on('minimap', this.handleMinimap.bind(this))
       .on('move', this.handleMove.bind(this))
