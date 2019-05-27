@@ -41,7 +41,8 @@ class Bot {
       this.client.on(event, this.bound.events[event])
     }
 
-    //this.client.socket.on('close', this.bound.spawn).on('error', empty)
+    //this.client.socket.on('close', this.bound.spawn)
+    this.client.socket.on('error', empty)
   }
 
   sortedFoodIds() {
