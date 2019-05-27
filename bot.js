@@ -141,7 +141,7 @@ class Bot {
       socket.send(buffer)
     }
 
-    this.run()
+    // this.run()
   }
 
   handleDead(notClosed) {
