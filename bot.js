@@ -133,11 +133,10 @@ class Bot {
         y: me.y + 2000 * angleSin
       }
 
-      if ((
-    (end.x - me.x) * (part.y - me.y) -
-      (end.y - me.y) * (part.x - me.x) >
-    0
-  )) {
+      if (
+        (end.x - me.x) * (part.y - me.y) - (end.y - me.y) * (part.x - me.x) >
+        0
+      ) {
         sin = -sin
       }
 
