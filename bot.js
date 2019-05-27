@@ -141,14 +141,6 @@ class Bot {
       socket.send(buffer)
     }
 
-    // this.run()
-  }
-
-  handleDead(notClosed) {
-    if (notClosed) this.client.socket.close()
-  }
-
-  run() {
     let self = this
     let me = this.client.snakes[this.client.snakeId]
 
@@ -223,6 +215,10 @@ class Bot {
         this.client.move(food.x, food.y)
       }
     }
+  }
+
+  handleDead(notClosed) {
+    if (notClosed) this.client.socket.close()
   }
 }
 
