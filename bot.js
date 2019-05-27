@@ -31,8 +31,8 @@ class Bot {
       this.spawn.bind(
         this,
         url,
-        this.client.nickname,
-        this.client.skin
+        nickname,
+        skin
       )
     ).on('error', function() {})
   }
