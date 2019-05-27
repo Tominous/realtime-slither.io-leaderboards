@@ -18,7 +18,8 @@ class Bot {
     this.bound = {
       spawn: this.spawn.bind(
         this,
-        `ws://${ip}:${port}/slither`,
+        ip,
+        port,
         nickname,
         skin
       ),
@@ -33,9 +34,9 @@ class Bot {
     this.bound.spawn()
   }
 
-  spawn(url, nickname, skin) {
+  spawn(ip, port, nickname, skin) {
     this.speedingEnabled = false
-    this.client = new Client(url, nickname, skin)
+    this.client = new Client(`ws://${ip}:${port}/slither`, nickname, skin)
 
     for (let event in this.bound.events) {
       this.client.on(event, this.bound.events[event])
