@@ -32,7 +32,9 @@ class Bot {
       .on('move', this.handleMove.bind(this))
       .on('dead', this.handleDead.bind(this))
 
-    this.client.socket.on('close', this.spawn.bind(this)).on('error', function() {})
+    this.client.socket
+      .on('close', this.spawn.bind(this))
+      .on('error', function() {})
   }
 
   sortedFoodIds() {
