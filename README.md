@@ -7,11 +7,9 @@ Realtime slither.io leaderboards
 
 ## API
 
-### WebSocket
+### WebSocket - /
 
-#### /
-
-##### Clientbound
+#### Clientbound
 
 All start with:
 
@@ -21,7 +19,7 @@ All start with:
 | Unsigned byte | Server length |
 | String        | Server        |
 
-###### Type 0: leaderboard
+##### Type 0: leaderboard
 
 | Type                    | Description   |
 | ----------------------- | ------------- |
@@ -37,13 +35,13 @@ Snake:
 | String                  | Nickname        |
 | Unsigned 24-bit integer | Length          |
 
-###### Type 1: minimap
+##### Type 1: minimap
 
 | Type           | Description |
 | -------------- | ----------- |
 | 80 \* 80 array | Minimap     |
 
-###### Type 2: bot moved
+##### Type 2: bot moved
 
 | Type                    | Description |
 | ----------------------- | ----------- |
