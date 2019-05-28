@@ -5,7 +5,7 @@
 
 Realtime slither.io leaderboards
 
-## APIs
+## API
 
 ### WebSocket
 
