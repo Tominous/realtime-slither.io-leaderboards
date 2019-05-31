@@ -4,6 +4,7 @@ let WebSocket = require('ws')
 class Bot {
   constructor(server, options, expressWsInstance) {
     this.expressWsInstance = expressWsInstance
+    this.speedingEnabled = false
 
     this.client = new Client(
       `ws://${server.ip}:${server.port}/slither`,
@@ -114,13 +115,15 @@ class Bot {
       let part = parts[0]
 
       if (part.distance < 150) {
-        this.client.speeding(true)
+        if (!this.speedingEnabled) {
+          this.client.speeding(true)
 
-        this.client.speedingEnabled = true
-      } else if (this.client.speedingEnabled) {
+          this.speedingEnabled = true
+        }
+      } else if (this.speedingEnabled) {
         this.client.speeding(false)
 
-        this.client.speedingEnabled = false
+        this.speedingEnabled = false
       }
 
       let cos = Math.cos(Math.PI)
