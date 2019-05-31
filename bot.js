@@ -148,10 +148,10 @@ class Bot {
         sin * (part.x - me.x) + cos * (part.y - me.y) + me.y
       )
     } else {
-      if (this.client.speedingEnabled) {
+      if (this.speedingEnabled) {
         this.client.speeding(false)
 
-        this.client.speedingEnabled = false
+        this.speedingEnabled = false
       }
 
       let foodIds = Object.keys(this.client.foods).sort(function(aId, bId) {
