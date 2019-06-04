@@ -1,6 +1,8 @@
 let Client = require('slitherode')
 let WebSocket = require('ws')
 
+let serverRe = /ws:\/\/(.*)\/slither/
+
 class Bot {
   constructor(server, options, expressWsInstance) {
     this.expressWsInstance = expressWsInstance
@@ -28,7 +30,7 @@ class Bot {
 
     if (connectedSockets.length === 0) return
 
-    let server = /ws:\/\/(.*)\/slither/.exec(this.client.socket.url)[1]
+    let server = this.client.socket.url.match(serverRe)[1]
     let buffer = Buffer.alloc(6 + server.length)
 
     let offset = buffer.writeUInt8(0, 0)
@@ -65,7 +67,7 @@ class Bot {
 
     if (connectedSockets.length === 0) return
 
-    let server = /ws:\/\/(.*)\/slither/.exec(this.client.socket.url)[1]
+    let server = this.client.socket.url.match(serverRe)[1]
     let buffer = Buffer.alloc(2 + server.length)
 
     let offset = buffer.writeUInt8(1, 0)
@@ -178,7 +180,7 @@ class Bot {
 
     if (connectedSockets.length === 0) return
 
-    let server = /ws:\/\/(.*)\/slither/.exec(this.client.socket.url)[1]
+    let server = this.client.socket.url.match(serverRe)[1]
     let buffer = Buffer.alloc(9 + server.length)
 
     let offset = buffer.writeUInt8(2, 0)
