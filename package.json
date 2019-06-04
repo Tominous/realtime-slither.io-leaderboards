@@ -2,6 +2,7 @@
   "main": "main.js",
   "scripts": {
     "test": "npm run prettier:check",
+    "prestart": "browserify --transform browserify-css frontend/main.js | terser > frontend/main.bundle.js",
     "start": "node . --nickname rsl.glitch.me --skin 42",
     "prettier:check": "prettier --check '**/*'",
     "prettier:format": "prettier --write '**/*'"
@@ -10,11 +11,16 @@
     "express": "4.17.1",
     "express-ws": "4.0.0",
     "slitherode": "7.0.5",
+    "ws": "7.0.0",
     "yargs": "13.2.4"
   },
   "devDependencies": {
+    "browserify": "16.2.3",
+    "browserify-css": "0.15.0",
     "husky": "2.3.0",
+    "material-components-web": "2.3.0",
     "prettier": "1.17.0",
-    "pretty-quick": "1.11.0"
+    "pretty-quick": "1.11.0",
+    "terser": "4.0.0"
   }
 }

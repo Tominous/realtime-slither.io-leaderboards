@@ -1,4 +1,4 @@
-@import url('https://cdn.jsdelivr.net/npm/material-components-web@2.1.0/dist/material-components-web.min.css');
+@import url('node_modules/material-components-web/dist/material-components-web.min.css');
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 body {

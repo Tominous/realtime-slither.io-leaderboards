@@ -35,6 +35,7 @@ if (options.skin.includes(',')) {
 ;(async function() {
   let servers = await getServers()
   let application = express()
+
   let expressWsInstance = expressWs(application)
 
   application.use(frontend(), websocket())

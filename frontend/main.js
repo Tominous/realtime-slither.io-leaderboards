@@ -1,4 +1,8 @@
 ;(function() {
+  require('./main.css')
+
+  let material = require('material-components-web')
+
   let cache = {}
 
   let socket = new WebSocket(
@@ -29,7 +33,7 @@
       let card = document.createElement('div')
       card.className = 'mdc-card mdc-ripple-surface'
 
-      mdc.ripple.MDCRipple.attachTo(card)
+      material.ripple.MDCRipple.attachTo(card)
 
       let primaryAction = document.createElement('div')
       primaryAction.className = 'mdc-card__primary-action'

@@ -10,16 +10,10 @@ module.exports = function() {
       .sendFile(path.join(process.cwd(), 'frontend', 'main.html'))
   })
 
-  router.get('/main.css', function(_request, response) {
+  router.get('/main.bundle.js', function(_request, response) {
     response
       .status(200)
-      .sendFile(path.join(process.cwd(), 'frontend', 'main.css'))
-  })
-
-  router.get('/main.js', function(_request, response) {
-    response
-      .status(200)
-      .sendFile(path.join(process.cwd(), 'frontend', 'main.js'))
+      .sendFile(path.join(process.cwd(), 'frontend', 'main.bundle.js'))
   })
 
   return router
