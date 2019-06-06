@@ -1,5 +1,5 @@
 ;(function() {
-  let messages = require('./messages')
+  let messages = require('../../messages')
 
   ;(function connectToBot() {
     let socket = new WebSocket('ws://rsl.glitch.me')
