@@ -123,9 +123,7 @@ Total score: ${decoded.leaderboard.reduce(function(previousValue, snake) {
         let decoded = messages.botPositionAndLength.decode(buffer)
         let cached = getCached(decoded.server)
 
-        cached.botPositionAndLength.innerText = `Bot's position: ${decoded.x}x${
-          decoded.y
-        }
+        cached.botPositionAndLength.innerText = `Bot's position: ${decoded.x}x${decoded.y}
         Bot's length: ${decoded.length}`
 
         break
