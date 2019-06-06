@@ -1,5 +1,6 @@
 let slitherode = require('slitherode')
 let WebSocket = require('ws')
+let messages = require('./messages')
 
 let serverRe = /ws:\/\/(.*)\/slither/
 
@@ -31,27 +32,12 @@ class Bot {
     if (connectedSockets.length === 0) return
 
     let server = this.client.socket.url.match(serverRe)[1]
-    let buffer = Buffer.alloc(6 + server.length)
-
-    let offset = buffer.writeUInt8(0, 0)
-    offset = buffer.writeUInt8(server.length, offset)
-    offset += buffer.write(server, offset)
-    offset = buffer.writeUInt16BE(botRank, offset)
-
-    buffer.writeUInt16BE(totalPlayers, offset)
-
-    for (let index = 0; index < 10; index++) {
-      let snake = leaderboard[index]
-      let snakeBuffer = Buffer.alloc(4 + snake.nickname.length)
-
-      let snakeBufferOffset = snakeBuffer.writeUInt8(snake.nickname.length, 0)
-
-      snakeBufferOffset += snakeBuffer.write(snake.nickname, snakeBufferOffset)
-
-      snakeBuffer.writeUIntBE(snake.length, snakeBufferOffset, 3)
-
-      buffer = Buffer.concat([buffer, snakeBuffer])
-    }
+    let buffer = messages.leaderboard.encode(
+      server,
+      botRank,
+      totalPlayers,
+      leaderboard
+    )
 
     for (let socket of connectedSockets) {
       socket.send(buffer)
@@ -68,14 +54,7 @@ class Bot {
     if (connectedSockets.length === 0) return
 
     let server = this.client.socket.url.match(serverRe)[1]
-    let buffer = Buffer.alloc(2 + server.length)
-
-    let offset = buffer.writeUInt8(1, 0)
-    offset = buffer.writeUInt8(server.length, offset)
-
-    buffer.write(server, offset)
-
-    buffer = Buffer.concat([buffer, Buffer.from(minimap)])
+    let buffer = messages.minimap.encode(server, minimap)
 
     for (let socket of connectedSockets) {
       socket.send(buffer)
@@ -181,15 +160,12 @@ class Bot {
     if (connectedSockets.length === 0) return
 
     let server = this.client.socket.url.match(serverRe)[1]
-    let buffer = Buffer.alloc(9 + server.length)
-
-    let offset = buffer.writeUInt8(2, 0)
-    offset = buffer.writeUInt8(server.length, offset)
-    offset += buffer.write(server, offset)
-    offset = buffer.writeUInt16BE(me.x, offset)
-    offset = buffer.writeUInt16BE(me.y, offset)
-
-    buffer.writeUIntBE(this.client.length(id), offset, 3)
+    let buffer = messages.botPositionAndLength.encode(
+      server,
+      me.x,
+      me.y,
+      this.client.length(id)
+    )
 
     for (let socket of connectedSockets) {
       socket.send(buffer)

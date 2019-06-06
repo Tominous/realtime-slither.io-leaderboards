@@ -24,7 +24,7 @@ let options = yargs
 if (options.skin.includes(',')) {
   options.skin = Buffer.from(options.skin.split(','))
 } else {
-  options.skin = Number(options.skin)
+  options.skin = +options.skin
 
   if (isNaN(options.skin)) {
     console.error('Invalid skin')

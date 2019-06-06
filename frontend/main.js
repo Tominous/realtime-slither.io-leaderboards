@@ -2,31 +2,11 @@
   require('./main.css')
 
   let material = require('material-components-web')
+  let messages = require('../messages')
 
   let cache = {}
 
-  let socket = new WebSocket(
-    `${location.protocol.replace('http', 'ws')}//${location.host}/`
-  )
-
-  socket.binaryType = 'arraybuffer'
-
-  socket.onmessage = function(event) {
-    let view = new DataView(event.data)
-    let offset = 0
-
-    let type = view.getUint8(offset)
-    offset++
-
-    let serverLength = view.getUint8(offset)
-    offset++
-
-    let server = String.fromCharCode(
-      ...new Uint8Array(event.data.slice(offset, offset + serverLength))
-    )
-
-    offset += serverLength
-
+  function getCached(server) {
     let cached = cache[server]
 
     if (typeof cached === 'undefined') {
@@ -61,14 +41,14 @@
 
       media.appendChild(canvas)
 
-      let botPositionAndScore = document.createElement('div')
-      botPositionAndScore.innerText = 'Loading'
+      let botPositionAndLength = document.createElement('div')
+      botPositionAndLength.innerText = 'Loading'
 
       let leaderboard = document.createElement('div')
       leaderboard.innerText = 'Loading'
 
       primaryAction.appendChild(media)
-      primaryAction.appendChild(botPositionAndScore)
+      primaryAction.appendChild(botPositionAndLength)
       primaryAction.appendChild(leaderboard)
 
       card.appendChild(primaryAction)
@@ -76,66 +56,55 @@
       document.body.appendChild(card)
       document.body.appendChild(document.createElement('br'))
 
-      cached = cache[server] = {
+      return (cache[server] = {
         canvas,
         context,
-        botPositionAndScore,
+        botPositionAndLength,
         leaderboard
-      }
+      })
     }
 
-    switch (type) {
+    return cached
+  }
+
+  let socket = new WebSocket(
+    `${location.protocol.replace('http', 'ws')}//${location.host}/`
+  )
+
+  socket.binaryType = 'arraybuffer'
+
+  socket.onmessage = function(event) {
+    let buffer = Buffer.from(event.data)
+
+    switch (buffer.readUInt8(0)) {
       case 0: {
-        let leaderboard = []
+        let decoded = messages.leaderboard.decode(buffer)
+        let cached = getCached(decoded.server)
 
-        let botRank = view.getUint16(offset)
-        offset += 2
+        cached.leaderboard.innerText = `Bot's rank: ${decoded.botRank}
+Total players: ${decoded.totalPlayers}
+Total score: ${decoded.leaderboard.reduce(function(previousValue, snake) {
+          return previousValue + snake.length
+        }, 0)}
 
-        let totalPlayers = view.getUint16(offset)
-        offset += 2
-
-        let totalScore = 0
-
-        while (offset < event.data.byteLength) {
-          let nicknameLength = view.getUint8(offset)
-          offset++
-
-          let nickname = String.fromCharCode(
-            ...new Uint8Array(event.data.slice(offset, offset + nicknameLength))
-          )
-
-          offset += nicknameLength
-
-          let length = (view.getUint16(offset) << 8) + view.getUint8(offset + 2)
-          offset += 3
-
-          totalScore += length
-
-          leaderboard.push({
-            nickname,
-            length
-          })
-        }
-
-        cached.leaderboard.innerText = `Bot's rank: ${botRank}
-      Total players: ${totalPlayers}
-      Total score: ${totalScore}
-
-      #1 ${leaderboard[0].nickname} ${leaderboard[0].length}
-      #2 ${leaderboard[1].nickname} ${leaderboard[1].length}
-      #3 ${leaderboard[2].nickname} ${leaderboard[2].length}
-      #4 ${leaderboard[3].nickname} ${leaderboard[3].length}
-      #5 ${leaderboard[4].nickname} ${leaderboard[4].length}
-      #6 ${leaderboard[5].nickname} ${leaderboard[5].length}
-      #7 ${leaderboard[6].nickname} ${leaderboard[6].length}
-      #8 ${leaderboard[7].nickname} ${leaderboard[7].length}
-      #9 ${leaderboard[8].nickname} ${leaderboard[8].length}
-      #10 ${leaderboard[9].nickname} ${leaderboard[9].length}`
+#1 ${decoded.leaderboard[0].nickname} ${decoded.leaderboard[0].length}
+#2 ${decoded.leaderboard[1].nickname} ${decoded.leaderboard[1].length}
+#3 ${decoded.leaderboard[2].nickname} ${decoded.leaderboard[2].length}
+#4 ${decoded.leaderboard[3].nickname} ${decoded.leaderboard[3].length}
+#5 ${decoded.leaderboard[4].nickname} ${decoded.leaderboard[4].length}
+#6 ${decoded.leaderboard[5].nickname} ${decoded.leaderboard[5].length}
+#7 ${decoded.leaderboard[6].nickname} ${decoded.leaderboard[6].length}
+#8 ${decoded.leaderboard[7].nickname} ${decoded.leaderboard[7].length}
+#9 ${decoded.leaderboard[8].nickname} ${decoded.leaderboard[8].length}
+#10 ${decoded.leaderboard[9].nickname} ${decoded.leaderboard[9].length}`
 
         break
       }
 
       case 1: {
+        let decoded = messages.minimap.decode(buffer)
+        let cached = getCached(decoded.server)
+
         cached.context.clearRect(
           0,
           0,
@@ -143,36 +112,21 @@
           cached.canvas.height
         )
 
-        let i = 0
-
-        while (offset < event.data.byteLength) {
-          if (view.getUint8(offset) === 1) {
-            cached.context.fillRect(
-              (i % 80) + 80 - 80 + 12,
-              i / 80 + 80 - 80 + 12,
-              1,
-              1
-            )
-          }
-
-          i++
-          offset++
+        for (let position of decoded.positions) {
+          cached.context.fillRect(position[0], position[1], 1, 1)
         }
 
         break
       }
 
       case 2: {
-        let x = view.getUint16(offset)
-        offset += 2
+        let decoded = messages.botPositionAndLength.decode(buffer)
+        let cached = getCached(decoded.server)
 
-        let y = view.getUint16(offset)
-        offset += 2
-
-        let score = (view.getUint16(offset) << 8) + view.getUint8(offset + 2)
-
-        cached.botPositionAndScore.innerText = `Bot's position: ${x}x${y}
-        Bot's score: ${score}`
+        cached.botPositionAndLength.innerText = `Bot's position: ${decoded.x}x${
+          decoded.y
+        }
+        Bot's length: ${decoded.length}`
 
         break
       }
