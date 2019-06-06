@@ -6,15 +6,16 @@ let frontend = require('./routes/frontend')
 let websocket = require('./routes/websocket')
 let Bot = require('./bot')
 
+require('dotenv').config()
+
 let options = yargs
+  .env('RSL')
   .option('nickname', {
     nargs: 1,
-    demandOption: true,
     string: true
   })
   .option('skin', {
     nargs: 1,
-    demandOption: true,
     string: true,
     describe: 'Number or array of numbers separated by commas'
   })

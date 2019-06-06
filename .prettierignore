@@ -3,3 +3,5 @@
 .prettierignore
 LICENSE
 frontend/*.bundle.js
+.env*
+.config/glitch-package-manager
