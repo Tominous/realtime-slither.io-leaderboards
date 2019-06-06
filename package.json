@@ -3,7 +3,7 @@
   "scripts": {
     "test": "npm run prettier:check",
     "prestart": "browserify --transform browserify-css frontend/main.js | terser > frontend/main.bundle.js",
-    "start": "node . --nickname rsl.glitch.me --skin 42",
+    "start": "node . --nickname $NICKNAME --skin $SKIN",
     "prettier:check": "prettier --check '**/*'",
     "prettier:format": "prettier --write '**/*'"
   },
