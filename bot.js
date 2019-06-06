@@ -1,4 +1,4 @@
-let Client = require('slitherode')
+let slitherode = require('slitherode')
 let WebSocket = require('ws')
 
 let serverRe = /ws:\/\/(.*)\/slither/
@@ -8,7 +8,7 @@ class Bot {
     this.expressWsInstance = expressWsInstance
     this.speedingEnabled = false
 
-    this.client = new Client(
+    this.client = new slitherode.Client(
       `ws://${server.ip}:${server.port}/slither`,
       options.nickname,
       options.skin
