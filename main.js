@@ -1,6 +1,6 @@
 let express = require('express')
 let expressWs = require('express-ws')
-let getServers = require('slitherode/get-servers')
+let slitherode = require('slitherode')
 let yargs = require('yargs')
 let frontend = require('./routes/frontend')
 let websocket = require('./routes/websocket')
@@ -33,7 +33,7 @@ if (options.skin.includes(',')) {
 }
 
 ;(async function() {
-  let servers = await getServers()
+  let servers = await slitherode.servers()
   let application = express()
 
   let expressWsInstance = expressWs(application)
