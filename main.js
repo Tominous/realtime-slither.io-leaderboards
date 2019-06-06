@@ -5,6 +5,7 @@ let yargs = require('yargs')
 let frontend = require('./routes/frontend')
 let websocket = require('./routes/websocket')
 let Bot = require('./bot')
+let other = require('./routes/other')
 
 require('dotenv').config()
 
@@ -39,7 +40,7 @@ if (options.skin.includes(',')) {
 
   let expressWsInstance = expressWs(application)
 
-  application.use(frontend(), websocket())
+  application.use(frontend(), websocket(), await other())
 
   let listener = await application.listen(process.env.PORT || 3000)
 
