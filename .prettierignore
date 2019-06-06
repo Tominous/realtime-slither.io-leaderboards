@@ -1,7 +1,7 @@
+**/*.bundle.js
 .config/glitch-package-manager
 .editorconfig
 .env
 .gitignore
 .prettierignore
 LICENSE
-frontend/*.bundle.js
