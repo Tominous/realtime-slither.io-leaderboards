@@ -4,9 +4,9 @@
     "test": "npm run prettier:check",
     "prestart": "npm run browserify:all",
     "start": "node .",
-    "browserify:all": "npm run browserify:frontend && npm run browserify:glitch-browser-tools",
+    "browserify:all": "npm run browserify:frontend && npm run browserify:glitch-tools",
     "browserify:frontend": "browserify --transform browserify-css frontend/main.js | terser > frontend/main.bundle.js",
-    "browserify:glitch-browser-tools": "browserify glitch-tools/browser/follow-bot.js | terser > glitch-tools/browser/follow-bot.bundle.js",
+    "browserify:glitch-tools": "browserify glitch-tools/browser/follow-bot.js | terser > glitch-tools/browser/follow-bot.bundle.js",
     "prettier:check": "prettier --check '**/*'",
     "prettier:format": "prettier --write '**/*'"
   },
