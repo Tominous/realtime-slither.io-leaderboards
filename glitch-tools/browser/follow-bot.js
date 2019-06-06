@@ -12,6 +12,7 @@
       let decoded = messages.botPositionAndLength.decode(
         Buffer.from(event.data)
       )
+
       if (decoded.server !== `${bso.ip}:${bso.po}`) return
 
       xm = decoded.x - snake.xx
