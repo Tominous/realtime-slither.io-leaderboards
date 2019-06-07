@@ -2,7 +2,7 @@
   let messages = require('../../messages')
 
   ;(function connectToBot() {
-    let socket = new WebSocket('ws://rsl.glitch.me')
+    let socket = new WebSocket(`ws://${process.env.PROJECT_NAME}.glitch.me`)
 
     socket.binaryType = 'arraybuffer'
 
