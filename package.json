@@ -26,7 +26,7 @@
     "browserify-css": "0.15.0",
     "husky": "2.4.0",
     "material-components-web": "2.3.0",
-    "prettier": "1.18.1",
+    "prettier": "1.18.2",
     "pretty-quick": "1.11.0",
     "terser": "4.0.0"
   }
