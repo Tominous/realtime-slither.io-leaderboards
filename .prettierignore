@@ -1,5 +1,4 @@
 **/*.bundle.js
-.config/glitch-package-manager
 .editorconfig
 .env
 .gitignore
