@@ -15,7 +15,8 @@
 
 ```js
 let script = document.createElement('script')
-script.src = 'https://project-name.glitch.me/glitch-tools/browser/follow-bot.bundle.js'
+script.src =
+  'https://project-name.glitch.me/glitch-tools/browser/follow-bot.bundle.js'
 
 document.body.appendChild(script)
 ```

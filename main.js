@@ -10,7 +10,12 @@ let other = require('./routes/other')
 require('dotenv').config()
 
 let options = yargs
-  .env('RSL')
+  .env()
+  .option('port', {
+    nargs: 1,
+    number: true,
+    default: 3000
+  })
   .option('nickname', {
     nargs: 1,
     string: true
@@ -42,13 +47,18 @@ if (options.skin.includes(',')) {
 
   application.use(frontend(), websocket(), await other())
 
-  let listener = await application.listen(process.env.PORT || 3000)
+  let listener = await application.listen(options.port)
 
   console.log(`Listening on *:${listener.address().port}`)
 
   for (let server of servers) {
     ;(function spawn() {
-      let bot = new Bot(server, options, expressWsInstance)
+      let bot = new Bot(
+        server,
+        options.nickname,
+        options.skin,
+        expressWsInstance
+      )
 
       bot.client.socket.on('close', spawn)
     })()

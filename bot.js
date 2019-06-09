@@ -5,19 +5,29 @@ let messages = require('./messages')
 let serverRe = /ws:\/\/(.*)\/slither/
 
 class Bot {
-  constructor(server, options, expressWsInstance) {
+  constructor(server, nickname, skin, expressWsInstance) {
     this.expressWsInstance = expressWsInstance
     this.speedingEnabled = false
 
+    let self = this
+
     this.client = new slitherode.Client(
       `ws://${server.ip}:${server.port}/slither`,
-      options.nickname,
-      options.skin
+      nickname,
+      skin
     )
-      .on('leaderboard', this.handleLeaderboard.bind(this))
-      .on('minimap', this.handleMinimap.bind(this))
-      .on('move', this.handleMove.bind(this))
-      .on('dead', this.handleDead.bind(this))
+      .on('leaderboard', function() {
+        self.handleLeaderboard(...arguments)
+      })
+      .on('minimap', function() {
+        self.handleMinimap(...arguments)
+      })
+      .on('move', function() {
+        self.handleMove(...arguments)
+      })
+      .on('dead', function() {
+        self.handleDead(...arguments)
+      })
 
     this.client.socket.on('error', function() {})
   }
