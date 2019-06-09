@@ -5,8 +5,8 @@
     "prestart": "if [ -n \"$PROJECT_REMIX_CHAIN\" ]; then npm run browserify:all; else npm run browserify:frontend; fi",
     "start": "node .",
     "browserify:all": "npm run browserify:frontend && npm run browserify:glitch-tools",
-    "browserify:frontend": "browserify --transform browserify-css --transform envify --transform uglifyify --outfile frontend/main.bundle.js frontend/main.js",
-    "browserify:glitch-tools": "browserify --transform envify --transform uglifyify --outfile glitch-tools/browser/follow-bot.bundle.js glitch-tools/browser/follow-bot.js",
+    "browserify:frontend": "browserify --transform browserify-css --transform envify --transform [ uglifyify --global ] --outfile frontend/main.bundle.js frontend/main.js",
+    "browserify:glitch-tools": "browserify --transform envify --transform [ uglifyify --global ] --outfile glitch-tools/browser/follow-bot.bundle.js glitch-tools/browser/follow-bot.js",
     "prettier:check": "prettier --check '**/*'",
     "prettier:format": "prettier --write '**/*'"
   },
