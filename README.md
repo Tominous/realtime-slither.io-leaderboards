@@ -6,7 +6,7 @@
 ## process.memoryUsage().heapUsed API: /heap-used
 
 ```json
-{ "bytes": 0, "pretty": "" }
+{ "bytes": 0, "formatted": "" }
 ```
 
 ## Glitch tools

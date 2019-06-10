@@ -1,5 +1,5 @@
 let express = require('express')
-let prettyBytes = require('pretty-bytes')
+let bytes = require('bytes')
 let fs = require('fs').promises
 let path = require('path')
 
@@ -7,11 +7,11 @@ module.exports = async function() {
   let router = express.Router()
 
   router.get('/heap-used', function(_request, response) {
-    let heapUsed = process.memoryUsage().heapUsed
+    let memoryUsage = process.memoryUsage()
 
     response.status(200).json({
-      bytes: heapUsed,
-      pretty: prettyBytes(heapUsed)
+      bytes: memoryUsage.heapUsed,
+      formatted: bytes.format(memoryUsage.heapUsed)
     })
   })
 
