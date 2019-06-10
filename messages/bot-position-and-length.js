@@ -2,6 +2,7 @@ let ow = require('ow')
 let ipPortRegex = require('ip-port-regex')
 
 module.exports = {
+  type: 2,
   decode(buffer) {
     ow(buffer, ow.buffer)
 

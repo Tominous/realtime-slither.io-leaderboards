@@ -77,7 +77,7 @@
     let buffer = Buffer.from(event.data)
 
     switch (buffer.readUInt8(0)) {
-      case 0: {
+      case messages.leaderboard.type: {
         let decoded = messages.leaderboard.decode(buffer)
         let cached = getCached(decoded.server)
 
@@ -101,7 +101,7 @@ Total score: ${decoded.leaderboard.reduce(function(previousValue, snake) {
         break
       }
 
-      case 1: {
+      case messages.minimap.type: {
         let decoded = messages.minimap.decode(buffer)
         let cached = getCached(decoded.server)
 
@@ -119,7 +119,7 @@ Total score: ${decoded.leaderboard.reduce(function(previousValue, snake) {
         break
       }
 
-      case 2: {
+      case messages.botPositionAndLength.type: {
         let decoded = messages.botPositionAndLength.decode(buffer)
         let cached = getCached(decoded.server)
 

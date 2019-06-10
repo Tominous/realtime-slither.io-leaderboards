@@ -1,4 +1,4 @@
-**/*.bundle.js
+**/*.bundle.js*
 .editorconfig
 .env
 .gitignore
