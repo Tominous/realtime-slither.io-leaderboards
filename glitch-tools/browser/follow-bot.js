@@ -7,13 +7,11 @@
     socket.binaryType = 'arraybuffer'
 
     socket.onmessage = function(event) {
+      if (snake === null) return
+
       let buffer = Buffer.from(event.data)
 
-      if (
-        snake === null ||
-        buffer.readUInt8(0) !== messages.botPositionAndLength.type
-      )
-        return
+      if (buffer.readUInt8(0) !== messages.botPositionAndLength.type) return
 
       let decoded = messages.botPositionAndLength.decode(buffer)
 
