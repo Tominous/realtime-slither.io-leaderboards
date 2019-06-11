@@ -1,8 +1,20 @@
 ;(function() {
-  let messages = require('../../messages')
+  let messages = require('../../../messages')
+
+  let host =
+    typeof process.env.PROJECT_NAME !== 'undefined'
+      ? `${process.env.PROJECT_NAME}.glitch.me`
+      : undefined
+
+  while (!host) {
+    host = prompt(
+      'Enter the host (ip:port or domain name) of the feeder',
+      'localhost:3000'
+    )
+  }
 
   ;(function connectToBot() {
-    let socket = new WebSocket(`ws://${process.env.PROJECT_NAME}.glitch.me`)
+    let socket = new WebSocket(`ws://${host}`)
 
     socket.binaryType = 'arraybuffer'
 

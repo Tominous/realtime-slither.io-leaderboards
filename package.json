@@ -2,16 +2,15 @@
   "main": "main.js",
   "scripts": {
     "test": "npm run prettier:check",
-    "prestart": "if [ -n \"$PROJECT_REMIX_CHAIN\" ]; then npm run browserify:all; else npm run browserify:frontend; fi",
+    "prestart": "npm run browserify:all",
     "start": "node .",
     "browserify:all": "npm run browserify:frontend && npm run browserify:tools",
     "browserify:frontend": "browserify --transform browserify-css --transform envify --transform [ uglifyify --global ] --outfile frontend/main.bundle.js frontend/main.js",
-    "browserify:tools": "browserify --transform envify --transform [ uglifyify --global ] --outfile tools/browser/follow-bot.bundle.js tools/browser/follow-bot.js",
+    "browserify:tools": "browserify --transform envify --transform [ uglifyify --global ] --outfile tools/browser/follow-bot/main.bundle.js tools/browser/follow-bot/main.js",
     "prettier:check": "prettier --check '**/*'",
     "prettier:format": "prettier --write '**/*'"
   },
   "dependencies": {
-    "bytes": "3.1.0",
     "dotenv": "8.0.0",
     "express": "4.17.1",
     "express-ws": "4.0.0",
