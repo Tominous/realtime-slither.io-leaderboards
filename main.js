@@ -18,10 +18,12 @@ let options = yargs
   })
   .option('nickname', {
     nargs: 1,
+    default: '',
     string: true
   })
   .option('skin', {
     nargs: 1,
+    default: '',
     string: true,
     describe: 'Number or array of numbers separated by commas'
   })
