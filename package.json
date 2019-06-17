@@ -17,7 +17,7 @@
     "ip-port-regex": "2.0.0",
     "ow": "0.13.2",
     "slitherode": "9.0.0",
-    "ws": "7.0.0",
+    "ws": "7.0.1",
     "yargs": "13.2.4"
   },
   "devDependencies": {
