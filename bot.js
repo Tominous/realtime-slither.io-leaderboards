@@ -170,6 +170,7 @@ class Bot {
     if (connectedSockets.length === 0) return
 
     let server = this.client.socket.url.match(serverRe)[1]
+
     let buffer = messages.botPositionAndLength.encode(
       server,
       me.x,
@@ -182,8 +183,8 @@ class Bot {
     }
   }
 
-  handleDead(notClosed) {
-    if (notClosed) this.client.socket.close()
+  handleDead() {
+    if (this.client.connected) this.client.socket.close()
   }
 }
 
