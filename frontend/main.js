@@ -1,7 +1,7 @@
 ;(function() {
   require('./main.css')
 
-  let material = require('material-components-web')
+  let ripple = require('@material/ripple')
   let messages = require('../messages')
 
   let cache = {}
@@ -13,7 +13,7 @@
       let card = document.createElement('div')
       card.className = 'mdc-card mdc-ripple-surface'
 
-      material.ripple.MDCRipple.attachTo(card)
+      ripple.MDCRipple.attachTo(card)
 
       let primaryAction = document.createElement('div')
       primaryAction.className = 'mdc-card__primary-action'

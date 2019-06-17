@@ -17,15 +17,16 @@
     "ip-port-regex": "2.0.0",
     "ow": "0.13.2",
     "slitherode": "9.0.0",
-    "ws": "7.0.0",
+    "ws": "7.0.1",
     "yargs": "13.2.4"
   },
   "devDependencies": {
+    "@material/card": "2.3.0",
+    "@material/ripple": "2.3.0",
     "browserify": "16.2.3",
     "browserify-css": "0.15.0",
     "envify": "4.1.0",
     "husky": "2.4.1",
-    "material-components-web": "2.3.0",
     "prettier": "1.18.2",
     "pretty-quick": "1.11.1",
     "uglifyify": "5.0.1"
