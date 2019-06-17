@@ -49,9 +49,9 @@ if (options.skin.includes(',')) {
 
   application.use(frontend(), websocket(), tools())
 
-  let listener = await application.listen(options.port)
+  await application.listen(options.port)
 
-  console.log(`Listening on *:${listener.address().port}`)
+  console.log('Listening')
 
   for (let server of servers) {
     ;(function spawn() {
