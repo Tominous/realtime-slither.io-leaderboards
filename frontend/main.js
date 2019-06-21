@@ -33,7 +33,7 @@
       canvas.height = 104
 
       let context = canvas.getContext('2d')
-      context.fillStyle = 'rgba(255, 255, 255, 0.40)'
+      context.fillStyle = 'rgba(255, 255, 255, 0.25)'
       context.textAlign = 'center'
       context.textBaseline = 'middle'
 
